@@ -1,6 +1,3 @@
-import {
-  IDcreator
-} from "./index.js";
 export const taskFactory = function (title = "Title", dueDate = "not set") {
   let description = "";
   let completed = false;
@@ -19,6 +16,9 @@ export const taskFactory = function (title = "Title", dueDate = "not set") {
   const setProjectID = function (ID) {
     projectID = ID;
   };
+  const setTaskTitle = function (newTitle) {
+    title = newTitle;
+  }
   const changePriority = (p) => {
     let num = parseInt(p);
     if (num <= 5 && num >= 1) priority = num;
@@ -31,7 +31,7 @@ export const taskFactory = function (title = "Title", dueDate = "not set") {
   const getTaskID = () => taskID;
   const getProjectID = () => projectID;
   const getListID = () => listID;
-  const getTitle = () => title;
+  const getTaskTitle = () => title;
   const getDueDate = () => dueDate;
   const getDescription = () => description;
   const isCompleted = () => completed;
@@ -43,8 +43,9 @@ export const taskFactory = function (title = "Title", dueDate = "not set") {
     getListID,
     getProjectID,
     setProjectID,
+    getTaskTitle,
+    setTaskTitle,
     getDueDate,
-    getTitle,
     getDescription,
     isCompleted,
     completeTask,

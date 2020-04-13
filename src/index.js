@@ -4,6 +4,9 @@ import {
 import {
   runKarma
 } from "./karma.js";
+import {
+  display
+} from "./displayController.js"
 // Every task must have a unique ID thus this should be passed in every task
 export const IDcreator = (function () {
   let count = 0;
@@ -23,6 +26,7 @@ function checkBeforeRun() {
     const project = projectFactory();
     const ID = 0;
     project.setProjectID(0);
+    project.setProjectTitle("INBOX");
     pMap.set(ID, project);
   }
 
@@ -34,26 +38,18 @@ checkBeforeRun();
 
 const p1 = runKarma.createProject();
 const p2 = runKarma.createProject();
+p2.setProjectTitle("project 2")
+p1.setProjectTitle("project 1")
 
-console.log(typeof (p1));
-console.log("size of pMap is : " + pMap.size);
 let t1 = runKarma.addTask();
 let t2 = runKarma.addTask();
-console.log(pMap.get(0));
-console.log("size of tMap is : " + tMap.size);
-console.log("------------------------------------");
+t1.setTaskTitle("I am t1 and i am in INBOX and p1");
+t2.setTaskTitle("I am t1 and i am in INBOX and p1");
+runKarma.addTask();
+runKarma.addTask();
+runKarma.addTask();
 runKarma.addTaskToProject(p1, t1);
 runKarma.addTaskToProject(p1, t2);
 
-for (let [k, v] of pMap.entries()) {
-  console.log(v.getProjectID());
-}
-console.log("end of pMap");
-for (let [k, v] of tMap.entries()) {
-  console.log(v.getTaskID());
-}
-console.log("end of tMap");
-runKarma.deleteProject(p1);
-runKarma.deleteProject(p2);
-console.log(pMap.size);
-console.log(tMap.size);
+display.listProject();
+display.listInbox();
