@@ -1,0 +1,82 @@
+body {
+    margin: 0px;
+}
+
+h2 {
+    margin: auto;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(110, 95, 207, 1.0);
+    margin: 0px;
+    color: whitesmoke;
+}
+
+.container {
+    height: 95vh;
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    background-color: white;
+}
+
+.left-nav {
+    flex: 1 1 0;
+    background-color: white;
+    border: none;
+    box-shadow: none;
+}
+
+.right-nav {
+    flex: 1 1 0;
+    background-color: white;
+    border: none;
+    box-shadow: none;
+}
+
+.main {
+    flex: 3 1 0;
+    background-color: white;
+    border: none;
+    box-shadow: none;
+}
+
+div {
+    height: auto;
+    min-height: 30px;
+    /* width: 100%; */
+    background-color: rgba(0, 255, 128, 0.5);
+    margin-top: 5px;
+    margin-bottom: 5px;
+    box-shadow: 1px 1px 5px black;
+    border-radius: 5px;
+    padding: 5px;
+    justify-content: center;
+}
+
+main>.main :hover {
+    box-shadow: 1px 1px 10px black;
+    background-color: rgba(0, 255, 128, 0.699);
+}
+
+main>.right-nav :hover {
+    box-shadow: 1px 1px 10px black;
+    background-color: rgba(0, 255, 128, 0.699);
+}
+
+main>.left-nav :hover {
+    box-shadow: 1px 1px 10px black;
+    background-color: rgba(0, 255, 128, 0.699);
+}
+
+#task-creator {
+    background-color: rgb(76, 151, 212);
+    color: whitesmoke;
+}
+
+#project-creator {
+    background-color: rgb(76, 151, 212);
+    color: whitesmoke;
+}
