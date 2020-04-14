@@ -2,9 +2,13 @@ body {
     margin: 0px;
 }
 
-h2 {
+header {
     margin: auto;
+    min-height: 20px;
+    padding: 5px;
     text-align: center;
+    font-size: 18px;
+    font-weight: bolder;
     position: sticky;
     top: 0;
     left: 0;
@@ -14,12 +18,27 @@ h2 {
     color: whitesmoke;
 }
 
+footer {
+    min-height: 20px;
+    padding: 5px;
+    margin: auto;
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(110, 95, 207, 1.0);
+    margin: 0px;
+    color: whitesmoke;
+}
+
 .container {
-    height: 95vh;
+    height: 100vh;
     width: 100%;
     display: flex;
     align-items: flex-start;
     background-color: white;
+    overflow: auto;
 }
 
 .left-nav {
@@ -27,6 +46,7 @@ h2 {
     background-color: white;
     border: none;
     box-shadow: none;
+    padding: 5px;
 }
 
 .right-nav {
@@ -41,9 +61,11 @@ h2 {
     background-color: white;
     border: none;
     box-shadow: none;
+    padding: 5px;
+    overflow: auto;
 }
 
-div {
+.task {
     height: auto;
     min-height: 30px;
     /* width: 100%; */
@@ -54,13 +76,30 @@ div {
     border-radius: 5px;
     padding: 5px;
     justify-content: center;
+    font-size: 20px;
 }
 
-main>.main :hover {
+.project {
+    height: auto;
+    min-height: 30px;
+    /* width: 100%; */
+    background-color: rgba(0, 255, 128, 0.5);
+    margin-top: 5px;
+    margin-bottom: 5px;
+    box-shadow: 1px 1px 5px black;
+    border-radius: 5px;
+    padding: 5px;
+    justify-content: center;
+    font-size: 20px;
+}
+
+main>.main :hover,
+main>.left-nav :hover,
+main>.right-nav :hover {
     box-shadow: 1px 1px 10px black;
-    background-color: rgba(0, 255, 128, 0.699);
 }
 
+/* 
 main>.right-nav :hover {
     box-shadow: 1px 1px 10px black;
     background-color: rgba(0, 255, 128, 0.699);
@@ -69,14 +108,36 @@ main>.right-nav :hover {
 main>.left-nav :hover {
     box-shadow: 1px 1px 10px black;
     background-color: rgba(0, 255, 128, 0.699);
-}
+} */
 
-#task-creator {
+.task-creator {
+    height: auto;
+    min-height: 30px;
+    /* width: 100%; */
+    background-color: rgba(0, 255, 128, 0.5);
+    margin-top: 5px;
+    margin-bottom: 5px;
+    box-shadow: 1px 1px 5px black;
+    border-radius: 5px;
+    padding: 5px;
+    justify-content: center;
+    font-size: 20px;
     background-color: rgb(76, 151, 212);
     color: whitesmoke;
 }
 
-#project-creator {
+.project-creator {
+    height: auto;
+    min-height: 30px;
+    /* width: 100%; */
+    background-color: rgba(0, 255, 128, 0.5);
+    margin-top: 5px;
+    margin-bottom: 5px;
+    box-shadow: 1px 1px 5px black;
+    border-radius: 5px;
+    padding: 5px;
+    justify-content: center;
+    font-size: 20px;
     background-color: rgb(76, 151, 212);
     color: whitesmoke;
 }
