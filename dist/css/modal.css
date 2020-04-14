@@ -1,0 +1,59 @@
+.modal-container {
+    display: none;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.modal {
+    border: 1px solid black;
+    margin: 10% auto;
+    background-color: whitesmoke;
+    width: 60%;
+    overflow: auto;
+    padding: 5px;
+    height: auto;
+}
+
+.modal>h2 {
+    border: 1px solid black;
+    width: auto;
+    margin: 2px;
+    padding: 10px;
+    text-align: left;
+    background: yellow;
+}
+
+.container {
+    border: 1px solid black;
+    display: flex;
+    padding: 2px;
+    flex-direction: row;
+    height: 90%;
+    overflow: auto;
+}
+
+.modal-nav-bar {
+    border: 1px solid black;
+    flex: 1 1 0;
+    padding: 2px;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-activity {
+    flex: 4 1 0;
+    padding: 2px;
+}
+
+.nav {
+    border: 1px solid black;
+    padding: 5px;
+    margin: 0px;
+    text-align: left;
+}

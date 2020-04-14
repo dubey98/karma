@@ -5,65 +5,64 @@ import {
 import {
     render
 } from "./render.js";
+import {
+    clickHandler
+} from "./clickHandler.js";
 
 export const display = function () {
     const project = document.querySelector('.left-nav')
     const listProject = function () {
+        _clearProjectArea();
         for (let [k, v] of pMap.entries()) {
             const div = render.controller("project", k);
             project.appendChild(div);
         }
-        addProjectCreator();
+        _addProjectCreator();
     }
     const main = document.querySelector('.main');
-    const listInbox = function () {
-        clearTaskArea();
-        //select the default project from project map
-        const p = pMap.get(0);
-        //retrieve the default list
-        for (let [k, v] of tMap.entries()) {
-            if (v.getProjectID() === 0) {
-                const div = render.controller("task", parseInt(k));
-                main.appendChild(div);
-            }
-        }
-        addTaskCreator();
-    }
-    const listTaskInProject = function (ID) {
-        clearTaskArea();
+    const listTaskInProject = function (pID) {
+        _clearTaskArea();
         //ID= iD of the project to be listed
         for (let [k, v] of tMap.entries()) {
-            if (v.getProjectID() === ID) {
+            if (v.getProjectID() === pID) {
                 const div = render.controller("task", parseInt(k));
                 main.appendChild(div);
             }
         }
-        addTaskCreator();
+        _addTaskCreator(pID);
     }
 
-    function clearTaskArea() {
+    function _clearTaskArea() {
         const tasks = document.querySelectorAll('.task');
-        tasks.forEach((value, key) => main.removeChild(value));
+        tasks.forEach(value => main.removeChild(value));
     }
 
-    function addTaskCreator() {
+    function _clearProjectArea() {
+        const projects = document.querySelectorAll('.project');
+        projects.forEach(value => project.removeChild(value));
+    }
+
+    function _addTaskCreator(pID) {
         const div = document.createElement('div');
         div.classList.add('task')
+        div.style.backgroundColor = "steelblue";
         div.innerHTML = "Add a new Task";
-        div.setAttribute("id", "task-creator");
+        div.setAttribute("id", `project${pID}`);
+        div.addEventListener('click', (e) => clickHandler.createTaskClick(pID, e));
         main.appendChild(div);
     }
 
-    function addProjectCreator() {
+    function _addProjectCreator() {
         const div = document.createElement('div');
-        div.classList.add('project')
+        div.classList.add('project');
+        div.style.backgroundColor = "steelblue";
         div.innerHTML = "Add a new Project";
-        div.setAttribute("id", "project-creator");
+        div.setAttribute("id", "");
+        div.addEventListener('click', (e) => clickHandler.createProjectClick(e));
         project.appendChild(div);
     }
     return {
         listProject,
-        listInbox,
         listTaskInProject
     }
 }();
