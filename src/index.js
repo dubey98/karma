@@ -9,9 +9,13 @@ import {
 import {
   display,
 } from "./displayController.js";
+import {
+  saveData,
+  retrieveData
+} from "./savedata.js";
 // Every task must have a unique ID thus this should be passed in every task
-export let pMap = new Map();
-export let tMap = new Map();
+export const pMap = new Map();
+export const tMap = new Map();
 
 export const IDcreator = (function () {
   let count = 0;
@@ -26,19 +30,48 @@ export const IDcreator = (function () {
   };
 })();
 
-function checkBeforeRun() {
-  function _createDefaultProject() {
-    const project = projectFactory();
-    const ID = 0;
-    project.setProjectID(0);
-    project.setProjectTitle("INBOX");
-    pMap.set(ID, project);
-  }
+// function checkBeforeRun() {
+//   function _createDefaultProject() {
+//     const project = projectFactory();
+//     const ID = 0;
+//     project.setProjectID(0);
+//     project.setProjectTitle("INBOX");
+//     pMap.set(ID, project);
+//   }
 
-  if (pMap.size === 0) {
-    _createDefaultProject();
+//   if (pMap.size === 0) {
+//     _createDefaultProject();
+//   }
+// }
+// checkBeforeRun();
+
+function main() {
+  if (!localStorage.getItem("pMap") && !localStorage.getItem("tMap")) {
+    populateStorage();
+    runKarma();
+  } else {
+    runKarma();
   }
 }
-checkBeforeRun();
-display.listProject();
-display.listTaskInProject(0);
+main();
+
+function populateStorage() {
+  const p = projectFactory();
+  const ID = 0;
+  p.setProjectID(0);
+  p.setProjectTitle("INBOX");
+  pMap.set(ID, p);
+  localStorage.setItem("pMap", JSON.stringify([ID, JSON.stringify(p)]));
+  const t = taskFactory();
+  t.setProjectID(0);
+  t.setTaskTitle("demo");
+  t.setTaskID(0);
+  tMap.set(0, t);
+  localStorage.setItem("tMap", JSON.stringify([ID, JSON.stringify(t)]));
+}
+
+function runKarma() {
+  retrieveData();
+  display.listProject();
+  display.listTaskInProject(0);
+}

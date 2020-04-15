@@ -90,9 +90,6 @@ footer {
     box-shadow: 1px 1px 10px black;
 }
 
-.task :hover {
-    box-shadow: none;
-}
 
 .task-creator {
     height: auto;

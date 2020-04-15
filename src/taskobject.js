@@ -1,4 +1,76 @@
-export const taskFactory = function (title, dueDate, description, priority = 5, taskID, projectID, completed = false) {
+import {
+  IDcreator
+} from ".";
+
+export const taskFactory = ({
+  title = "task",
+  dueDate = "",
+  completed = false,
+  priority = 5,
+  taskID = [IDcreator()],
+  projectID = 0,
+  description = ""
+} = {}) => ({
+  title,
+  dueDate,
+  completed,
+  priority,
+  taskID,
+  projectID,
+  description,
+  setTaskTitle(newtitle) {
+    this.title = newtitle;
+    return this;
+  },
+  getTaskTitle() {
+    return this.title;
+  },
+  setTaskID(ID) {
+    this.taskID = ID;
+    return this;
+  },
+  getTaskID() {
+    return this.taskID;
+  },
+  getProjectID() {
+    return this.projectID;
+  },
+  setProjectID(ID) {
+    this.projectID = ID;
+    return this;
+  },
+  setPriority(num) {
+    this.priority = num;
+    return this;
+  },
+  getPriority() {
+    return this.priority;
+  },
+  isCompleted() {
+    return this.completed;
+  },
+  completed() {
+    this.completed = true;
+    return this;
+  },
+  getDueDate() {
+    return this.dueDate;
+  },
+  setDueDate(date) {
+    this.dueDate = date;
+    return this;
+  },
+  setDescription(description) {
+    this.description = description;
+    return this;
+  },
+  getDescription() {
+    return this.description;
+  }
+});
+
+/*export const taskFactory = function (title, dueDate, description, priority = 5, taskID, projectID, completed = false) {
+
   // let title;
   // let dueDate;
   // let description = "";
@@ -65,3 +137,4 @@ export const taskFactory = function (title, dueDate, description, priority = 5, 
     getPriority,
   };
 };
+*/
