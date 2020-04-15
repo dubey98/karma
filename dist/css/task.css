@@ -1,0 +1,29 @@
+.task {
+    display: flex;
+    flex-direction: column;
+    padding: 0px;
+}
+
+.task-header {
+    margin: 0px;
+    padding: 2px;
+    font-size: small;
+    text-align: left;
+    flex: 1 1 0;
+}
+
+.task-main {
+    margin: 0px;
+    padding: 5px;
+    font-size: larger;
+    text-align: left;
+    flex: 1 1 0;
+}
+
+.task-footer {
+    margin: 0px;
+    padding: 2px;
+    font-size: small;
+    text-align: left;
+    flex: 1 1 0;
+}

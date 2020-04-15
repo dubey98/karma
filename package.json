@@ -8,6 +8,7 @@
     "build": "webpack --progress --mode=production",
     "watch": "webpack --progress --watch",
     "error": "webpack --display-error-details",
+    "exlint": "eslint -init",
     "build-dev": "webpack --progress --mode=development"
   },
   "author": "",

@@ -10,8 +10,11 @@ import {
 import {
     IDcreator,
     tMap,
-    pMap
+    pMap,
 } from "./index.js";
+import {
+    saveData
+} from "./savedata.js"
 import {
     projectFactory
 } from "./projectobject.js";
@@ -22,7 +25,7 @@ export const clickHandler = function () {
     }
 
     const handleTaskClick = function (tID, e) {
-        // renderModal.controller("task", tID);
+        renderModal.controller("task", tID);
         console.log("clickHandler invoked by task : " + tID);
     }
     const createTaskClick = function (pID, e) {
@@ -49,6 +52,7 @@ export const clickHandler = function () {
         let title = prompt("enter the project title");
         if (title !== null && title !== "") {
             p.setProjectTitle(title);
+            p.setProjectID(newPID);
             pMap.set(newPID, p);
             console.log("project succesfully created");
             display.listProject();

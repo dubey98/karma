@@ -17,19 +17,22 @@ export const display = function () {
             const div = render.controller("project", k);
             project.appendChild(div);
         }
-        _addProjectCreator();
+        const div = render.controller("create project");
+        project.appendChild(div);
     }
     const main = document.querySelector('.main');
     const listTaskInProject = function (pID) {
         _clearTaskArea();
         //ID= iD of the project to be listed
-        for (let [k, v] of tMap.entries()) {
-            if (v.getProjectID() === pID) {
+        for (let k of tMap.keys()) {
+            let v = tMap.get(k);
+            if (parseInt(v.projectID) == pID) {
                 const div = render.controller("task", parseInt(k));
                 main.appendChild(div);
             }
         }
-        _addTaskCreator(pID);
+        const div = render.controller("create task", pID);
+        main.appendChild(div);
     }
 
     function _clearTaskArea() {
@@ -42,25 +45,7 @@ export const display = function () {
         projects.forEach(value => project.removeChild(value));
     }
 
-    function _addTaskCreator(pID) {
-        const div = document.createElement('div');
-        div.classList.add('task')
-        div.style.backgroundColor = "steelblue";
-        div.innerHTML = "Add a new Task";
-        div.setAttribute("id", `project${pID}`);
-        div.addEventListener('click', (e) => clickHandler.createTaskClick(pID, e));
-        main.appendChild(div);
-    }
 
-    function _addProjectCreator() {
-        const div = document.createElement('div');
-        div.classList.add('project');
-        div.style.backgroundColor = "steelblue";
-        div.innerHTML = "Add a new Project";
-        div.setAttribute("id", "");
-        div.addEventListener('click', (e) => clickHandler.createProjectClick(e));
-        project.appendChild(div);
-    }
     return {
         listProject,
         listTaskInProject

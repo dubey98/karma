@@ -18,19 +18,19 @@
     overflow: auto;
     padding: 5px;
     height: auto;
+    border-radius: 10px;
+    box-shadow: 2px 2px 2px black;
 }
 
 .modal>h2 {
-    border: 1px solid black;
     width: auto;
     margin: 2px;
     padding: 10px;
     text-align: left;
-    background: yellow;
+    border-radius: 10px;
 }
 
-.container {
-    border: 1px solid black;
+.modal-details-container {
     display: flex;
     padding: 2px;
     flex-direction: row;
@@ -39,7 +39,6 @@
 }
 
 .modal-nav-bar {
-    border: 1px solid black;
     flex: 1 1 0;
     padding: 2px;
     display: flex;
@@ -52,8 +51,11 @@
 }
 
 .nav {
-    border: 1px solid black;
     padding: 5px;
     margin: 0px;
     text-align: left;
+}
+
+.modal-nav-bar :hover {
+    border: 1px solid black;
 }
