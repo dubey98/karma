@@ -61,13 +61,7 @@ function populateStorage() {
   p.setProjectID(0);
   p.setProjectTitle("INBOX");
   pMap.set(ID, p);
-  localStorage.setItem("pMap", JSON.stringify([ID, JSON.stringify(p)]));
-  const t = taskFactory();
-  t.setProjectID(0);
-  t.setTaskTitle("demo");
-  t.setTaskID(0);
-  tMap.set(0, t);
-  localStorage.setItem("tMap", JSON.stringify([ID, JSON.stringify(t)]));
+  saveData();
 }
 
 function runKarma() {

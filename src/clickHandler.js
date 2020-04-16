@@ -21,7 +21,7 @@ import {
 export const clickHandler = function () {
     const handleProjectClick = function (pID, e) {
         display.listTaskInProject(pID);
-        console.log("clickHandler invoked by project : " + pID);
+        // console.log("clickHandler invoked by project : " + pID);
     }
 
     const handleTaskClick = function (tID, e) {
@@ -30,21 +30,22 @@ export const clickHandler = function () {
     }
     const createTaskClick = function (pID, e) {
         // console.log("clickHandler invoked by createTask with pID = " + pID);
-        let t = taskFactory();
-        let newTaskID = IDcreator();
-        let title = prompt("Enter the task name");
-        if (title !== "" && title !== null) {
-            const p = pMap.get(pID);
-            t.setProjectID(pID);
-            t.setTaskTitle(title);
-            t.setTaskID(newTaskID);
-            p.addTask(t);
-            tMap.set(newTaskID, t);
-            saveData();
-            // console.log("task added succesfully!!!!");
-            console.log(tMap.size);
-            display.listTaskInProject(pID);
-        } else console.warn("empty task title");
+        renderModal.controller('create Task', pID);
+        // let t = taskFactory();
+        // let newTaskID = IDcreator();
+        // let title = prompt("Enter the task name");
+        // if (title !== "" && title !== null) {
+        //     const p = pMap.get(pID);
+        //     t.setProjectID(pID);
+        //     t.setTaskTitle(title);
+        //     t.setTaskID(newTaskID);
+        //     p.addTask(t);
+        //     tMap.set(newTaskID, t);
+        //     saveData();
+        //     // console.log("task added succesfully!!!!");
+        //     console.log(tMap.size);
+        //     display.listTaskInProject(pID);
+        // } else console.warn("empty task title");
     }
     const createProjectClick = function (e) {
         // console.log("clickHandler invoked to create a project");

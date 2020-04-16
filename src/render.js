@@ -26,7 +26,7 @@ export const render = function () {
     };
 
     const _createTaskDiv = function (ID) {
-        console.log("createTaskdiv called")
+        // console.log("createTaskdiv called")
         if (tMap.has(ID)) {
             const t = tMap.get(ID);
             const div = document.createElement('div');
@@ -43,7 +43,7 @@ export const render = function () {
             const delbtn = document.createElement('button');
             delbtn.classList.add('delete-button');
             delbtn.addEventListener('click', () => clickHandler.deleteTask(ID));
-            delbtn.innerHTML = "Delete Task";
+            delbtn.innerHTML = "X";
             taskMain.appendChild(delbtn);
 
             const taskFooter = document.createElement('div');
@@ -73,7 +73,7 @@ export const render = function () {
         delbtn.classList.add('delete-button');
         if (ID !== 0) {
             delbtn.addEventListener('click', () => clickHandler.deleteProject(ID));
-            delbtn.innerHTML = "Delete";
+            delbtn.innerHTML = "X";
             div.appendChild(delbtn);
         }
 

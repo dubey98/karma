@@ -1,61 +1,54 @@
 .modal-container {
     display: none;
-    background-color: rgba(0, 0, 0, 0.5);
-    position: fixed;
     height: 100%;
     width: 100%;
-    top: 0;
-    bottom: 0;
-    left: 0;
     z-index: 1;
+    background-color: rgba(0, 0, 0, 0.4);
+    position: fixed;
+    top: 0;
+    left: 0;
 }
 
 .modal {
-    border: 1px solid black;
-    margin: 10% auto;
+    height: 70%;
+    width: 40%;
+    min-width: fit-content;
     background-color: whitesmoke;
-    width: 60%;
-    overflow: auto;
-    padding: 5px;
-    height: auto;
-    border-radius: 10px;
-    box-shadow: 2px 2px 2px black;
+    margin: 5% auto;
+    padding: 20px;
+    display: flex;
+    border-radius: 20px;
 }
 
-.modal>h2 {
-    width: auto;
-    margin: 2px;
+.form {
+    height: 100%;
+    width: 100%;
+    margin: auto;
+    box-sizing: border-box;
+}
+
+.elements {
     padding: 10px;
-    text-align: left;
-    border-radius: 10px;
-}
-
-.modal-details-container {
+    width: 100%;
+    box-sizing: border-box;
     display: flex;
-    padding: 2px;
-    flex-direction: row;
-    height: 90%;
-    overflow: auto;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-.modal-nav-bar {
-    flex: 1 1 0;
-    padding: 2px;
-    display: flex;
-    flex-direction: column;
+.indi {
+    flex: 1 1 auto;
 }
 
-.modal-description {
-    flex: 4 1 0;
-    padding: 2px;
+input {
+    flex-grow: 2;
 }
 
-.nav {
-    padding: 5px;
-    margin: 0px;
-    text-align: left;
-}
-
-.modal-nav-bar :hover {
+#submit {
+    background-color: springgreen;
+    color: black;
+    margin: 0;
     border: 1px solid black;
+    border-radius: 5px;
+    text-decoration: none;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }

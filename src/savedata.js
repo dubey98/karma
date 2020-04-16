@@ -3,7 +3,7 @@
 import {
     pMap,
     tMap
-} from ".";
+} from "./index.js";
 import {
     projectFactory
 } from "./projectobject";
@@ -30,9 +30,13 @@ export const retrieveData = function () {
     let array1 = JSON.parse(localStorage.getItem("pMap"));
     for (let i = 0; i < array1.length; i++) {
         for (let j = 0; j < array1[i].length; j++) {
-            const ID = array1[i][0];
-            const p = Object.assign(projectFactory(), JSON.parse(array1[i][1]));
-            pMap.set(ID, p);
+            try {
+                const ID = array1[i][0];
+                const p = Object.assign(projectFactory(), JSON.parse(array1[i][1]));
+                pMap.set(ID, p);
+            } catch (e) {
+                console.log(e);
+            }
         }
     }
     tMap.clear();
@@ -40,9 +44,13 @@ export const retrieveData = function () {
         let array2 = JSON.parse(localStorage.getItem("tMap"));
         for (let i = 0; i < array2.length; i++) {
             for (let j = 0; j < array2[i].length; j++) {
-                const ID = array2[i][0];
-                const t = Object.assign(taskFactory(), JSON.parse(array2[i][1]));
-                tMap.set(ID, t);
+                try {
+                    const ID = array2[i][0];
+                    const t = Object.assign(taskFactory(), JSON.parse(array2[i][1]));
+                    tMap.set(ID, t);
+                } catch (e) {
+                    console.error(e);
+                }
             }
         }
     }

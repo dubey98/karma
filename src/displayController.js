@@ -23,7 +23,11 @@ export const display = function () {
     const main = document.querySelector('.main');
     const listTaskInProject = function (pID) {
         _clearTaskArea();
+
         //ID= iD of the project to be listed
+        const projectTitle = document.querySelector('#project-title');
+        projectTitle.innerHTML = `Project : ${(pMap.get(pID)).getProjectTitle()}`;
+
         for (let k of tMap.keys()) {
             let v = tMap.get(k);
             if (parseInt(v.projectID) == pID) {
