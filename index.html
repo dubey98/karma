@@ -11,7 +11,10 @@
 </head>
 
 <body>
-  <header>KARMA</header>
+  <header>
+    <h2 class="title">KARMA</h2>
+    <h2 class="title" id="project-title"></h2>
+  </header>
   <main class="container">
     <div class="left-nav">
       <!-- <div class="project" id="project-creator">Add project</div> -->
@@ -23,18 +26,29 @@
   <footer></footer>
   <div class="modal-container">
     <div class="modal">
-      <h2 class="modal-title">Task 1</h2>
-      <div class="modal-details-container">
-        <div class="modal-description">
-
+      <form class="form" id="myForm">
+        <div class="elements">
+          <label for="title">Enter task Title :</label>
+          <input type="text" name="title" id="" value="" required><br>
         </div>
-        <div class="modal-nav-bar">
-          <div class="nav" id="duedate"></div>
-          <div class="nav" id="priority"></div>
-          <div class="nav" id="completed"></div>
-          <div class="nav" id=""></div>
+        <div class="elements">
+          <label class="indi" for="priority">Set priority</label>
+          <select class="indi" name="priority" id="">
+            <option value="5">5</option>
+            <option value="4">4</option>
+            <option value="3">3</option>
+            <option value="2">2</option>
+            <option value="1">1</option>
+          </select><br>
         </div>
-      </div>
+        <div class="elements">
+          <label for="dueDate" class="indi">Due Date : </label>
+          <input type="date" name="dueDate" value="" class="indi" required><br>
+        </div>
+        <div class="elements">
+          <input type="submit" name="" id="submit" value="submit" class="indi">
+        </div>
+      </form>
     </div>
   </div>
 </body>
