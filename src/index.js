@@ -1,71 +1,35 @@
-import {
-  // project,
-  projectFactory,
-} from "./projectobject.js";
-import {
-  taskFactory,
-  // task,
-} from "./taskobject.js";
-import {
-  display,
-} from "./displayController.js";
-import {
-  saveData,
-  retrieveData
-} from "./savedata.js";
+import { projectFactory } from "./Project.js";
+import { display } from "./displayController.js";
+import { saveData, retrieveData } from "./savedata.js";
+
 // Every task must have a unique ID thus this should be passed in every task
-export const pMap = new Map();
-export const tMap = new Map();
+export let projects = {};
+export let tasks = {};
 
-export const IDcreator = (function () {
-  let count = 0;
-  if (!localStorage.getItem("count")) {
-    count = 0;
-    localStorage.setItem("count", 0);
-  } else count = localStorage.getItem("count");
-  return () => {
-    count++;
-    localStorage.setItem("count", count);
-    return count;
-  };
-})();
-
-// function checkBeforeRun() {
-//   function _createDefaultProject() {
-//     const project = projectFactory();
-//     const ID = 0;
-//     project.setProjectID(0);
-//     project.setProjectTitle("INBOX");
-//     pMap.set(ID, project);
-//   }
-
-//   if (pMap.size === 0) {
-//     _createDefaultProject();
-//   }
-// }
-// checkBeforeRun();
-
-function main() {
-  if (!localStorage.getItem("pMap") && !localStorage.getItem("tMap")) {
+//check if the projects and tasks exists in localstorage,if not populate it
+(function main() {
+  if (!localStorage.getItem("projects") && !localStorage.getItem("tasks")) {
     populateStorage();
     runKarma();
   } else {
     runKarma();
   }
-}
-main();
+})();
 
 function populateStorage() {
-  const p = projectFactory();
-  const ID = 0;
-  p.setProjectID(0);
-  p.setProjectTitle("INBOX");
-  pMap.set(ID, p);
+  const defaultProject = projectFactory();
+  //this is the only time we set the ID by ourselves
+  defaultProject.projectID = "0";
+  defaultProject.title = "INBOX";
+  projects["0"] = defaultProject;
   saveData();
 }
 
 function runKarma() {
-  retrieveData();
+  tasks = retrieveData().tasks;
+  projects = retrieveData().projects;
+  console.log(projects);
+  console.log(tasks);
   display.listProject();
-  display.listTaskInProject(0);
+  display.listTaskInProject();
 }

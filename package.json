@@ -5,7 +5,6 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --progress --mode=production",
     "watch": "webpack --progress --watch",
     "error": "webpack --display-error-details",
     "exlint": "eslint -init",
@@ -14,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "nanoid": "^3.1.10",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11"
   },

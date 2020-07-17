@@ -1,57 +1,35 @@
-import {
-    tMap,
-    pMap
-} from "./index.js";
-import {
-    render
-} from "./render.js";
-import {
-    clickHandler
-} from "./clickHandler.js";
+import { projects, tasks } from "./index";
+import { render } from "./render.js";
+import { retrieveData } from "./savedata";
 
-export const display = function () {
-    const project = document.querySelector('.left-nav')
-    const listProject = function () {
-        _clearProjectArea();
-        for (let [k, v] of pMap.entries()) {
-            const div = render.controller("project", k);
-            project.appendChild(div);
-        }
-        const div = render.controller("create project");
-        project.appendChild(div);
+export const display = (function () {
+  //grab the respectted divs
+  const projectList = document.getElementById("projectList");
+  const taskList = document.getElementById("taskList");
+
+  //  remive all the children of any element
+  const _removeChildren = function (element) {
+    element.innerHTML = "";
+  };
+
+  const listProject = function () {
+    // clean up the DOM first
+    _removeChildren(projectList);
+
+    // Create all the projects element
+    for (let project in projects) {
+      const newProjectDiv = render.makeProjectDiv(projects[project]);
+      projectList.appendChild(newProjectDiv);
     }
-    const main = document.querySelector('.main');
-    const listTaskInProject = function (pID) {
-        _clearTaskArea();
+    //creaete the project creator div
+    projectList.appendChild(render.createProjectCreatorDiv());
+  };
 
-        //ID= iD of the project to be listed
-        const projectTitle = document.querySelector('#project-title');
-        projectTitle.innerHTML = `Project : ${(pMap.get(pID)).getProjectTitle()}`;
-
-        for (let k of tMap.keys()) {
-            let v = tMap.get(k);
-            if (parseInt(v.projectID) == pID) {
-                const div = render.controller("task", parseInt(k));
-                main.appendChild(div);
-            }
-        }
-        const div = render.controller("create task", pID);
-        main.appendChild(div);
-    }
-
-    function _clearTaskArea() {
-        const tasks = document.querySelectorAll('.task');
-        tasks.forEach(value => main.removeChild(value));
-    }
-
-    function _clearProjectArea() {
-        const projects = document.querySelectorAll('.project');
-        projects.forEach(value => project.removeChild(value));
-    }
-
-
-    return {
-        listProject,
-        listTaskInProject
-    }
-}();
+  const listTaskInProject = () => {
+    console.log("list task in project");
+  };
+  return {
+    listProject,
+    listTaskInProject,
+  };
+})();
