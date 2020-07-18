@@ -1,104 +1,80 @@
-// this file module contains the controoler and the functions
-// whose work is as follows
-// _createTaskDIv ---- creates a task div and attaches an eventListener to instanceof
-// which handlesclick(defined in this file)
-
-import { projects, tasks } from "./index.js";
 import { clickHandler } from "./clickHandler.js";
 
 export const render = (function () {
-  const controller = function (str, ID) {
-    if (str === "task") {
-      return _createTaskDiv(ID);
-    } else if (str === "project") {
-      return _createProjectDiv(ID);
-    } else if (str == "create project") {
-      return _createProjectCreatorDiv();
-    } else if (str == "create task") {
-      return _createTaskCreatorDiv(ID);
-    }
-  };
+  const createTaskDiv = function (task) {
+    // <div class="m-1 d-flex">
+    //   <input type="checkbox" value="completed"></input>
+    //   <div class="p-2" style="flex-grow: 1;">
+    //     Task title
+    //   </div>
+    //   <div class="">2 days ago </div>
+    // </div>
 
-  const _createTaskDiv = function (ID) {
-    // console.log("createTaskdiv called")
-    if (tMap.has(ID)) {
-      const t = tMap.get(ID);
-      const div = document.createElement("div");
+    const taskID = task.taskID;
+    const projectID = task.projectID;
 
-      const taskHeader = document.createElement("div");
-      taskHeader.classList.add("task-header");
-      taskHeader.innerHTML = `priority  : ${t.getPriority()}`;
+    const card = document.createElement("div");
+    card.innerHTML = task.title;
 
-      const taskMain = document.createElement("div");
-      taskMain.classList.add("task-main");
-      taskMain.innerHTML = `${t.getTaskTitle()}`;
-
-      const delbtn = document.createElement("button");
-      delbtn.classList.add("delete-button");
-      delbtn.addEventListener("click", () => clickHandler.deleteTask(ID));
-      delbtn.innerHTML = "X";
-      taskMain.appendChild(delbtn);
-
-      const taskFooter = document.createElement("div");
-      taskFooter.classList.add("task-footer");
-      taskFooter.innerHTML = `Due Date : ${t.getDueDate()}`;
-
-      div.appendChild(taskHeader);
-      div.appendChild(taskMain);
-      div.appendChild(taskFooter);
-
-      div.classList.add("task");
-      div.setAttribute("id", `task${ID}`);
-      div.addEventListener("click", (e) => clickHandler.handleTaskClick(ID, e));
-      return div;
-    } else return document.createElement("div");
+    return card;
   };
 
   function makeProjectDiv(project) {
-    const ID = project.projectID;
+    // <div class="m-1">
+    //   <div class="p-2">Project title</div>
+    // </div>
 
-    const div = document.createElement("div");
-    div.innerHTML = `${project.title}`;
-    div.classList.add("project");
-    div.setAttribute("id", ID);
+    const projectCard = document.createElement("div");
+    const title = document.createElement("div");
 
-    // const delbtn = document.createElement("button");
-    // delbtn.classList.add("delete-button");
-    // if (ID !== 0) {
-    //   delbtn.addEventListener("click", () => clickHandler.deleteProject(ID));
-    //   delbtn.innerHTML = "X";
-    //   div.appendChild(delbtn);
-    // }
+    title.innerHTML = project.title;
+    title.classList.add("p-2");
+
+    projectCard.classList.add("m-1");
+
+    projectCard.appendChild(title);
 
     // div.addEventListener("click", (e) => clickHandler.handleProjectClick(ID));
-    return div;
+    return projectCard;
   }
 
-  function _createTaskCreatorDiv(pID) {
-    const div = document.createElement("div");
-    div.classList.add("task");
-    div.style.backgroundColor = "rgba(110, 95, 207, 0.8)";
-    div.style.color = "white";
-    div.innerHTML = "Add a new Task";
-    div.setAttribute("id", `project${pID}`);
-    div.addEventListener("click", (e) => clickHandler.createTaskClick(pID, e));
-    return div;
+  function createTaskCreatorDiv(pID) {
+    const button = document.createElement("button");
+
+    button.classList.add("button");
+    button.classList.add("button-primary");
+    button.classList.add("button-block");
+
+    button.className = "btn btn-block btn-primary";
+
+    button.innerHTML = "Add a new Task";
+
+    button.setAttribute("id", `project${pID}`);
+
+    button.addEventListener("click", (e) =>
+      clickHandler.createTaskClick(pID, e)
+    );
+    return button;
   }
 
   function createProjectCreatorDiv() {
-    const div = document.createElement("div");
-    div.classList.add("project");
-    div.style.backgroundColor = "rgba(110, 95, 207, 0.8)";
-    div.style.color = "white";
-    div.innerHTML = "Add a new Project";
-    div.setAttribute("id", "");
-    div.addEventListener("click", (e) => clickHandler.createProjectClick(e));
-    return div;
+    const button = document.createElement("button");
+
+    button.className = "btn btn-block btn-primary";
+
+    button.innerHTML = "Add a new Project";
+
+    button.setAttribute("id", "");
+
+    button.addEventListener("click", (e) => clickHandler.createProjectClick(e));
+
+    return button;
   }
 
   return {
-    controller,
     makeProjectDiv,
     createProjectCreatorDiv,
+    createTaskCreatorDiv,
+    createTaskDiv,
   };
 })();

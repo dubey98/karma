@@ -1,11 +1,12 @@
-import { projects, tasks } from "./index";
 import { render } from "./render.js";
-import { retrieveData } from "./savedata";
+
+const projects = JSON.parse(localStorage.getItem("projects"));
+const tasks = JSON.parse(localStorage.getItem("tasks"));
 
 export const display = (function () {
   //grab the respectted divs
   const projectList = document.getElementById("projectList");
-  const taskList = document.getElementById("taskList");
+  const taskList = document.getElementById("task-list");
 
   //  remive all the children of any element
   const _removeChildren = function (element) {
@@ -25,8 +26,18 @@ export const display = (function () {
     projectList.appendChild(render.createProjectCreatorDiv());
   };
 
-  const listTaskInProject = () => {
-    console.log("list task in project");
+  const listTaskInProject = (projectID = "0") => {
+    //clean up the mess
+    _removeChildren(taskList);
+    //create the task elements
+    for (let task in tasks) {
+      if (tasks[task].projectID == projectID) {
+        const newTaskDIv = render.createTaskDiv(tasks[task]);
+        taskList.appendChild(newTaskDIv);
+      }
+    }
+    //append the task creator div
+    taskList.appendChild(render.createTaskCreatorDiv());
   };
   return {
     listProject,

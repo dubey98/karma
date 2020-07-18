@@ -1,12 +1,14 @@
 import { nanoid } from "nanoid";
 
-export const taskFactory = (title, duedate, priority, projectID = "0") => {
+export const taskFactory = (title, dueDate, priority, projectID) => {
   let taskID = nanoid();
+  let completed = false;
   return {
     title,
     priority,
-    duedate,
+    dueDate,
     taskID,
     projectID,
+    completed,
   };
 };
