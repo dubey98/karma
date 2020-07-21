@@ -5,9 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>KARMA</title>
-  <!-- <link rel="stylesheet" href="css/master.css" /> -->
-  <!-- <link rel="stylesheet" href="css/modal.css" /> -->
-  <!-- <link rel="stylesheet" href="css/task.css"> -->
+  <link rel="stylesheet" href="css/modal.css" />
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="css/bootstrap.min.css.map">
 </head>
@@ -42,6 +40,27 @@
       <!-- making the task view of every task -->
     </div>
   </main>
+  <div class="my-modal-container" id="modal-container">
+    <div class="my-modal" id="my-modal">
+      <form>
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input class="form-control" type="text" name="title" id="title" value="" required>
+        </div>
+        <div class="form-group row">
+          <div class="col">
+            <label for="priority">priority</label>
+            <input class="form-control" type="number" name="priority" min="1" max="5" id="priority" value="" />
+          </div>
+          <div class="col">
+            <label for="dueDate">Due Date : </label>
+            <input class="form-control" type="date" name="dueDate" id="dueDate" value="">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Create</button>
+      </form>
+    </div>
+  </div>
 </body>
 <script src="main.js"></script>
 <!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"

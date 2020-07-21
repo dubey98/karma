@@ -1,6 +1,7 @@
 import { projectFactory } from "./Project";
 import { taskFactory } from "./Task";
 import { display } from "./displayController";
+import moment from "moment";
 
 export const clickHandler = (function () {
   const projects = JSON.parse(localStorage.getItem("projects"));
@@ -17,13 +18,21 @@ export const clickHandler = (function () {
   };
 
   // logic for creating a task
-  const createTaskClick = function (projectID = "0") {
-    const title = prompt("Enter the name of the task : ");
-    if (title == null || title == "" || title == undefined) {
-      alert("please insert an appropriate title");
-      return;
-    }
-    const task = taskFactory(title, Date.now, 5, projectID);
+  const createTaskClick = function ({
+    projectID = "0",
+    title,
+    dueDate,
+    priority,
+    taskID,
+  } = {}) {
+    const task = taskFactory({
+      taskID,
+      title,
+      priority,
+      dueDate,
+      projectID,
+      completed: false,
+    });
 
     tasks[task.taskID] = task;
     localStorage.setItem("tasks", JSON.stringify(tasks));
@@ -37,6 +46,11 @@ export const clickHandler = (function () {
     display.listTaskInProject(projectID);
   };
 
+  /**Show the modal for creating and updating the task */
+  const taskClick = function (taskID) {
+    console.log("task title is clicked ");
+  };
+
   /**Delete task from database*/
   const deleteTask = function (taskID) {
     delete tasks[taskID];
@@ -47,11 +61,19 @@ export const clickHandler = (function () {
     tasks[taskID].completed = tasks[taskID].completed ? false : true;
     localStorage.setItem("tasks", JSON.stringify(tasks));
   };
+
+  const changeDueDate = function (taskID) {
+    tasks[taskID].dueDate = Date.now;
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  };
+
   return {
     createProjectClick,
     createTaskClick,
     projectClick,
+    taskClick,
     deleteTask,
     completeTask,
+    changeDueDate,
   };
 })();

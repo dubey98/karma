@@ -60,12 +60,6 @@ export const display = (function () {
       return 0;
     });
 
-    taskArray.sort((a, b) => {
-      if (!a.completed && !b.completed) {
-        return a.dueDate - Date.now > b.dueDate - Date.now ? -1 : 1;
-      } else return 0;
-    });
-
     // append them to the taskList elements
     for (let i = 0; i < taskArray.length; i++) {
       const newTaskDiv = render.createTaskDiv(taskArray[i]);
@@ -76,8 +70,19 @@ export const display = (function () {
     taskList.appendChild(render.createTaskCreatorDiv(projectID));
   };
 
+  /**TaskID for only when updating the task */
+  const taskCreateForm = (projectID = "0") => {
+    render.taskCreationForm(projectID);
+  };
+
+  const taskUpdateForm = (taskID, projectID = "0") => {
+    render.updateTaskForm(taskID, projectID);
+  };
+
   return {
     listProject,
     listTaskInProject,
+    taskCreateForm,
+    taskUpdateForm,
   };
 })();
