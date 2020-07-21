@@ -63,6 +63,7 @@ export const clickHandler = (function () {
   };
 
   const changeDueDate = function (taskID) {
+    console.log("Not implemented !!!");
     tasks[taskID].dueDate = Date.now;
     localStorage.setItem("tasks", JSON.stringify(tasks));
   };

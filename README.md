@@ -2,12 +2,14 @@
 
 This is a simple to do app using which let's users create projects, tasks in projects and delete them.
 
-tools used 
+tools used
 
-* npm 
-* webpack
-* date-fns
-* localStorage API
-* DOM manipulation
+- npm
+- webpack
+- moment
+- localStorage API
+- DOM manipulation
 
-This app is a work in progress. more features will be added soon.
+**Special attributes**
+This SPA was made completely with JavaScript and using DOM manipulation. it has very few features now and was made primarily
+to exercise and learn DOM manipulation.
