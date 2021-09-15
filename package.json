@@ -8,17 +8,32 @@
     "watch": "webpack --progress --watch",
     "error": "webpack --display-error-details",
     "exlint": "eslint -init",
-    "build-dev": "webpack --progress --mode=development"
+    "build-dev": "webpack --progress --mode=development",
+    "start": "react-scripts start",
+    "build": "react-scripts build"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nanoid": "^3.1.10",
-    "webpack": "^4.42.1",
-    "webpack-cli": "^3.3.11"
+    "nanoid": "^3.1.10"
   },
   "dependencies": {
-    "date-fns": "^2.12.0",
-    "moment": "^2.27.0"
+    "bulma": "^0.9.3",
+    "moment": "^2.27.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "^4.0.3"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
