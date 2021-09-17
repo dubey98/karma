@@ -83,13 +83,16 @@ const TaskForm = () => {
 
       <div className="field is-grouped">
         <div className="control">
-          <button className="button is-success" onClick={() => addTask()}>
+          <button
+            className="button is-success is-light is-outlined"
+            onClick={() => addTask()}
+          >
             Add Task
           </button>
         </div>
         <div className="control">
           <button
-            className="button is-link is-light"
+            className="button is-link is-light is-outlined"
             onClick={() => handleFormClose()}
           >
             Cancel
@@ -101,7 +104,7 @@ const TaskForm = () => {
     <div>
       <div className="control pl-4">
         <button
-          className="button is-success"
+          className="button is-success is-light"
           onClick={() => setActivated(true)}
         >
           Add Task

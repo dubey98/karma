@@ -11,7 +11,7 @@ import {
   deleteDoc,
   serverTimestamp,
 } from "firebase/firestore";
-import { useAuth } from "./useAuth";
+import { AuthContextProvider, useAuth } from "./useAuth";
 
 const db = getFirestore();
 
@@ -29,7 +29,7 @@ export function TaskContextProvider({ children }) {
 const fs = ":::::::::::::::::::Firestore fetch:::::::::::::::::::::";
 
 function useTaskProvider() {
-  const user = useAuth().user;
+  const auth = useAuth();
   const [projects, setProjects] = useState([]);
   const [currentProject, setCurrentProject] = useState(null);
   const [tasks, setTasks] = useState([]);
@@ -37,11 +37,11 @@ function useTaskProvider() {
 
   useEffect(() => {
     async function getProjects() {
-      if (user) {
+      if (auth.user) {
         console.log(fs, "projects");
         const q = query(
           collection(db, "projects"),
-          where("uid", "==", user.uid)
+          where("uid", "==", auth.user.uid)
         );
 
         const snap = await getDocs(q);
@@ -55,16 +55,19 @@ function useTaskProvider() {
           (value) => value.title == "INBOX"
         );
         setCurrentProject(_currentProject.id);
+      } else {
+        setProjects([]);
+        setCurrentProject("INBOX");
       }
     }
 
     getProjects();
     return () => {};
-  }, [user]);
+  }, [auth.user]);
 
   useEffect(() => {
     async function _getTasks() {
-      if (user && currentProject !== null) {
+      if (auth.user && currentProject !== null) {
         console.log(fs, "tasks");
         const q = query(collection(db, "projects", currentProject, "tasks"));
 
@@ -76,15 +79,17 @@ function useTaskProvider() {
         });
 
         setTasks(_tasks);
+      } else {
+        setTasks([]);
       }
     }
 
     _getTasks();
     return () => {};
-  }, [user, currentProject, reloadTaskFlag]);
+  }, [auth.user, currentProject, reloadTaskFlag]);
 
   async function addTask(_newTask) {
-    if (user) {
+    if (auth.user) {
       const taskRef = collection(db, "projects", currentProject, "tasks");
       const newTask = await addDoc(taskRef, {
         ..._newTask,
@@ -95,7 +100,7 @@ function useTaskProvider() {
   }
 
   async function updateTask(taskId, updatedTask) {
-    if (user) {
+    if (auth.user) {
       const taskRef = doc(db, "projects", currentProject, "tasks", taskId);
       const updateRef = await updateDoc(taskRef, {
         ...updatedTask,
@@ -108,7 +113,7 @@ function useTaskProvider() {
   }
 
   async function deleteTask(taskId) {
-    if (user && taskId) {
+    if (auth.user && taskId) {
       const taskRef = doc(db, "projects", currentProject, "tasks", taskId);
       const deleteRef = await deleteDoc(taskRef);
       setReloadTaskFlag(!reloadTaskFlag);
@@ -117,15 +122,17 @@ function useTaskProvider() {
     }
   }
 
-  async function addProject(title, description) {
-    if (user) {
+  async function addProject(title, description = "") {
+    if (auth.user) {
       const _project = {
         title,
         description,
         timestamp: serverTimestamp(),
+        uid: auth.user.uid,
       };
       const projectRef = collection(db, "projects");
-      const newProject = await addDoc(projectRef, { _project });
+      const newProject = await addDoc(projectRef, { ..._project });
+      console.log(newProject);
       return newProject.id;
     } else {
       console.log("user not logged in", "project add ");
@@ -133,7 +140,7 @@ function useTaskProvider() {
   }
 
   async function deleteProject(projectId) {
-    if (user && projectId && projectId !== currentProject) {
+    if (auth.user && projectId && projectId !== currentProject) {
       const projectRef = doc(db, "projects", projectId);
       const q = query(collection(db, "projects", projectId, "tasks"));
       const _tasks = await getDoc(q);
@@ -148,7 +155,7 @@ function useTaskProvider() {
   }
 
   async function updateProject(updatedProject) {
-    if (user) {
+    if (auth.user) {
       const projectRef = doc(db, "projects", currentProject);
       const updateRef = await updateDoc(projectRef, {
         ...updatedProject,
@@ -160,17 +167,16 @@ function useTaskProvider() {
     }
   }
 
-  async function getTasks() {}
-
   return {
     tasks,
     projects,
+    // tasks
     addTask,
     updateTask,
     deleteTask,
+    // projects
     addProject,
     deleteProject,
     updateProject,
-    getTasks,
   };
 }

@@ -58,9 +58,9 @@ function authProvider() {
       });
   }
 
-  function signOut() {
-    auth.signOut();
-    console.log("sign out");
+  async function signOut() {
+    await auth.signOut();
+    setUser(null);
   }
 
   return {
