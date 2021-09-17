@@ -1,42 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useTask } from "./services/useTask";
 
 function TaskList() {
-  const taskList = [
-    {
-      id: 1,
-      title: "this is the task title",
-      dueDate: new Date(),
-      completed: false,
-    },
-    {
-      id: 2,
-      title: "this is the task title",
-      dueDate: new Date(),
-      completed: false,
-    },
-    {
-      id: 3,
-      title: "this is the task title",
-      dueDate: new Date(),
-      completed: true,
-    },
-    {
-      id: 4,
-      title: "this is the task title",
-      dueDate: new Date(),
-      completed: false,
-    },
-    {
-      id: 5,
-      title: "this is the task title",
-      dueDate: new Date(),
-      completed: true,
-    },
-  ];
+  const store = useTask();
 
   return (
     <div className="">
-      {taskList.map((task) => {
+      {store.tasks.map((task) => {
         return <Task task={task} key={task.id} />;
       })}
     </div>

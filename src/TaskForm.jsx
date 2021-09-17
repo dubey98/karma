@@ -1,28 +1,48 @@
 import React, { useState } from "react";
+import { useAuth } from "./services/useAuth";
+import { useTask } from "./services/useTask";
 
 const TaskForm = () => {
+  const store = useTask();
+
   const [activated, setActivated] = useState(false);
   const [title, setTitle] = useState("");
   const [titleError, setTitleError] = useState("");
-  const [dueDate, setDueDate] = useState(new Date().getTime());
+  const [dueDate, setDueDate] = useState(Date.now());
   const [dueDateError, setDueDateError] = useState("");
 
-  function addTask() {
-    if (title.trim() === "") {
-      setTitleError("Task title cannot be empty");
-      return;
-    } else if (new Date(dueDate).getTime() < new Date().getTime()) {
-      setDueDateError("due date cannot be in the past");
-      return;
+  async function addTask() {
+    if (validateInput()) {
+      const newTask = {
+        title: title,
+        description: "",
+        completed: false,
+        dueDate: dueDate,
+      };
+      await store.addTask(newTask);
+      setActivated(false);
     }
   }
 
   function handleFormClose() {
     setTitle("");
-    setDueDate(new Date().getTime());
+    setDueDate(Date.now());
     setDueDateError("");
     setTitleError("");
     setActivated(false);
+  }
+
+  function validateInput() {
+    let result = true;
+    if (title.trim() === "") {
+      result = false;
+      setTitleError("Task title cannot be empty");
+    }
+    if (new Date(dueDate).getTime() < new Date().getTime()) {
+      result = false;
+      setDueDateError("due date cannot be in the past");
+    }
+    return result;
   }
 
   return activated ? (
@@ -52,8 +72,8 @@ const TaskForm = () => {
         <div className="control">
           <input
             className="input"
-            type="date"
-            value={dueDate}
+            type="datetime-local"
+            value={new Date(dueDate).toISOString().split(".")[0]}
             onChange={(e) => setDueDate(e.target.value)}
             onFocus={(e) => setDueDateError("")}
           />

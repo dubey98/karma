@@ -4,6 +4,7 @@ import Navbar from "./Navbar";
 import TaskList from "./TaskList";
 import TaskForm from "./TaskForm";
 import { BrowserRouter as Router } from "react-router-dom";
+import { TaskContextProvider } from "./services/useTask";
 
 const App = () => {
   return (
@@ -12,12 +13,14 @@ const App = () => {
         <Navbar />
       </div>
       <section className="section">
-        <div className="container block">
-          <TaskList />
-        </div>
-        <div className="container block">
-          <TaskForm />
-        </div>
+        <TaskContextProvider>
+          <div className="container block">
+            <TaskList />
+          </div>
+          <div className="container block">
+            <TaskForm />
+          </div>
+        </TaskContextProvider>
       </section>
     </Router>
   );
