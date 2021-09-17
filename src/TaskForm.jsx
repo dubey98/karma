@@ -20,6 +20,8 @@ const TaskForm = () => {
   function handleFormClose() {
     setTitle("");
     setDueDate(new Date().getTime());
+    setDueDateError("");
+    setTitleError("");
     setActivated(false);
   }
 
