@@ -20,6 +20,7 @@ function ProjectList() {
       setActivated(false);
     }
   }
+
   function validateInput() {
     let result = true;
     if (title.trim() === "") {
@@ -28,9 +29,14 @@ function ProjectList() {
     }
     return result;
   }
+
+  async function handleChangeProject(projectId) {
+    await store.changeCurrentProject(projectId);
+  }
+
   return (
-    <div className="content">
-      <table>
+    <div>
+      <table className="table is-hoverable is-fullwidth">
         <thead>
           <tr>
             <th>Projects</th>
@@ -39,7 +45,15 @@ function ProjectList() {
         <tbody>
           {store.projects.map((project) => {
             return (
-              <tr key={project.id}>
+              <tr
+                key={project.id}
+                className={
+                  project.id === store.currentProject
+                    ? "is-selected is-clickable"
+                    : "is-clickable"
+                }
+                onClick={async () => await handleChangeProject(project.id)}
+              >
                 <td>{project.title}</td>
               </tr>
             );
@@ -77,7 +91,7 @@ function ProjectList() {
           </form>
         ) : (
           <div
-            className="button is-light is-success is-outlined"
+            className="button is-light is-success is-outlined is-fullwidth"
             onClick={() => setActivated(!activated)}
           >
             <strong>Add Project</strong>
