@@ -2,6 +2,7 @@
   "name": "karma",
   "version": "1.0.0",
   "description": "A todo App",
+  "homepage": "https://dubey98.github.io/karma/",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,7 +11,8 @@
     "exlint": "eslint -init",
     "build-dev": "webpack --progress --mode=development",
     "start": "react-scripts start",
-    "build": "react-scripts build"
+    "build": "react-scripts build",
+    "deploy": "react-scripts build && gh-pages -d build -b deployed"
   },
   "author": "",
   "license": "ISC",
@@ -20,6 +22,7 @@
   "dependencies": {
     "bulma": "^0.9.3",
     "firebase": "^9.0.2",
+    "gh-pages": "^3.2.3",
     "moment": "^2.27.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
