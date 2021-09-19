@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./services/firebase";
 import Navbar from "./Navbar";
 import TaskList from "./TaskList";
@@ -7,16 +7,20 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { TaskContextProvider } from "./services/useTask";
 import ProjectList from "./ProjectList";
 import Seo from "./services/Seo";
+import TaskDetail from "./components/TaskDetail";
 
 const App = () => {
+  const [modalActivated, setModalActivated] = useState(false);
+
   return (
     <Router>
       <Seo />
-      <div className="">
+      <div>
         <Navbar />
       </div>
-      <section className="section">
+      <section className="section has-text-light">
         <TaskContextProvider>
+          <TaskDetail />
           <div
             className="columns container"
             style={{ marginLeft: "auto", marginRight: "auto" }}

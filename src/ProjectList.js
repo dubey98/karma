@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import ProjectForm from "./components/ProjectForm";
 import { useTask } from "./services/useTask";
+import DefaultProjectList from "./components/DefaultProjectList";
 
 function ProjectList() {
   const store = useTask();
@@ -7,35 +9,13 @@ function ProjectList() {
   const [title, setTitle] = useState("");
   const [titleError, setTitleError] = useState("");
 
-  function handleCloseForm() {
-    setTitle("");
-    setTitleError("");
-    setActivated(false);
-  }
-
-  async function handleAddProject() {
-    if (validateInput()) {
-      console.log("calling add project");
-      await store.addProject(title);
-      setActivated(false);
-    }
-  }
-
-  function validateInput() {
-    let result = true;
-    if (title.trim() === "") {
-      result = false;
-      setTitleError("project must have a name");
-    }
-    return result;
-  }
-
   async function handleChangeProject(projectId) {
     await store.changeCurrentProject(projectId);
   }
 
   return (
     <div>
+      <DefaultProjectList />
       <table className="table is-hoverable is-fullwidth">
         <thead>
           <tr>
@@ -62,39 +42,13 @@ function ProjectList() {
       </table>
       <div>
         {activated ? (
-          <form>
-            <div className="field">
-              <input
-                className="input"
-                type="text"
-                name="title"
-                id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                onFocus={() => setTitleError("")}
-              />
-              <p className="help is-danger">{titleError}</p>
-            </div>
-            <div className="field is-grouped">
-              <div className="control">
-                <div
-                  className="button is-success is-light"
-                  onClick={async () => await handleAddProject()}
-                >
-                  Add Project
-                </div>
-              </div>
-              <div className="control" onClick={() => handleCloseForm()}>
-                <div className="button is-light is-info">Cancel</div>
-              </div>
-            </div>
-          </form>
+          <ProjectForm setActivated={setActivated} />
         ) : (
           <div
             className="button is-light is-success is-outlined is-fullwidth"
             onClick={() => setActivated(!activated)}
           >
-            <strong>Add Project</strong>
+            Add Project
           </div>
         )}
       </div>

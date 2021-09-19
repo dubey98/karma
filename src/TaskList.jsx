@@ -1,19 +1,23 @@
 import moment from "moment";
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { isNumeric, selectPriority } from "./constants";
+import { useGlobals } from "./services/useGlobals";
 import { useTask } from "./services/useTask";
 
 function TaskList() {
   const store = useTask();
 
   function mapTasksbyPriority() {
-    const priorityList = selectPriority
+    const _selectPriority = [...selectPriority];
+
+    const priorityList = _selectPriority
       .sort((p1, p2) => p2.value - p1.value)
       .map((priority) => {
         return { ...priority, tasks: [] };
       });
-
-    for (let i = 0; i < store.tasks.length; i++) {
+    const tasks = store.tasks;
+    console.log(tasks.length);
+    for (let i = 0; i < tasks.length; i++) {
       const task = store.tasks[i];
       let index = priorityList.length - 1;
 
@@ -30,11 +34,14 @@ function TaskList() {
       priorityList[index].tasks.push(task);
     }
     const TaskTable = [];
-
+    console.log(priorityList);
     priorityList.forEach((p) => {
       if (p.tasks.length > 0) {
         const element = (
-          <table className="table is-fullwidth is-hoverable m-0 p-0">
+          <table
+            className="table is-fullwidth is-hoverable m-0 p-0"
+            key={p.priority}
+          >
             <thead>
               <tr>
                 <th>{p.display_name}</th>
@@ -55,18 +62,12 @@ function TaskList() {
     return TaskTable;
   }
 
-  const taskbyPriority = store.tasks.sort((t1, t2) => {
-    if (isNumeric(t1.priority) && isNumeric(t2.priority)) {
-      return parseInt(t2.priority) - parseInt(t1.priority);
-    }
-    return 0;
-  });
-
   return <div>{mapTasksbyPriority()}</div>;
 }
 
 function Task({ task }) {
   const store = useTask();
+  const globals = useGlobals();
 
   function selectBackground() {
     let className = "columns p-0 m-0 ";
@@ -80,6 +81,10 @@ function Task({ task }) {
       className += "has-background-warning-light";
     }
     return className;
+  }
+
+  function handleTaskClick() {
+    globals.activateTaskDetailModal(task);
   }
 
   return (
@@ -97,24 +102,18 @@ function Task({ task }) {
             )}
           </div>
         </div>
-        <div className="column is-flex">
+        <div
+          className="column is-flex is-clickable"
+          onClick={() => handleTaskClick()}
+        >
           <div className="is-align-self-center">{task.title}</div>
         </div>
         <div className="column is-narrow is-flex">
-          <div
-            className={
-              new Date(task.dueDate).getTime() < new Date().getTime()
-                ? "is-align-self-center"
-                : "is-align-self-center"
-            }
-          >
+          <div className="is-align-self-center">
             {moment(task.dueDate).calendar()}
           </div>
         </div>
 
-        {/* <div className="column is-narrow">
-          <div className="button is-link is-light">Edit</div>
-        </div> */}
         <div
           className="column is-narrow is-flex"
           onClick={async () => await store.deleteTask(task.id)}

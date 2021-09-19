@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { useTask } from "./services/useTask";
 import * as constants from "./constants";
 import moment from "moment";
+import DropDown from "./components/DropDown";
+import DateAndTimeSelector from "./components/DateAndTimeSelector";
+import FormButtons from "./components/FormButtons";
 
 const TaskForm = () => {
   const store = useTask();
@@ -106,21 +109,8 @@ const TaskForm = () => {
   }
 
   function handleTimeSelect(dateTime, source) {
-    if (source === "tags") {
-      setDueDate(new Date(dateTime).getTime());
-    } else if (source === "date") {
-      const _date = new Date(dateTime);
-      setDueDate(_date);
-    } else if (source == "time") {
-      const timeFragment = dateTime.split(":");
-      const _date = new Date(dueDate).setHours(
-        timeFragment[0],
-        timeFragment[1],
-        0,
-        0
-      );
-      setDueDate(_date);
-    }
+    let _date = constants.selectDateTime(dateTime, source);
+    setDueDate(_date);
   }
 
   function mapScheduleTags() {
@@ -161,7 +151,7 @@ const TaskForm = () => {
             placeholder="Bring milk and sweets"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            onFocus={(e) => setTitleError("")}
+            onFocus={() => setTitleError("")}
           />
           <span className="icon is-small is-left">
             <i className="fas fa-tasks"></i>
@@ -182,22 +172,11 @@ const TaskForm = () => {
       </div>
 
       <div className="field is-grouped">
-        <div className="control">
-          <div className="select">
-            <select
-              onChange={(e) => handleTaskPriority(e.target.value)}
-              value={priority}
-            >
-              {constants.selectPriority.map((priority) => {
-                return (
-                  <option key={priority.value} value={priority.value}>
-                    {priority.priority}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
-        </div>
+        <DropDown
+          handleValueChange={handleTaskPriority}
+          initialValue={priority}
+          dropDownOptions={constants.selectPriority}
+        />
         {!customDueDate ? (
           <div className="field">
             <div className="control">
@@ -210,52 +189,19 @@ const TaskForm = () => {
             </div>
           </div>
         ) : (
-          <div class="field is-horizontal is-grouped">
-            <div class="field-body" style={{ flexGrow: "0" }}>
-              <div class="field">
-                <p class="control">
-                  <input
-                    class="input"
-                    type="date"
-                    placeholder="Name"
-                    onChange={(e) => handleTimeSelect(e.target.value, "date")}
-                    value={moment(dueDate).format("YYYY-MM-DD")}
-                  />
-                </p>
-              </div>
-              <div class="field">
-                <p class="control has-icons-left has-icons-right">
-                  <input
-                    class="input"
-                    type="time"
-                    onChange={(e) => handleTimeSelect(e.target.value, "time")}
-                    value={moment(dueDate).format("HH:mm")}
-                  />
-                </p>
-              </div>
-            </div>
-          </div>
+          <DateAndTimeSelector
+            initialDateTime={dueDate}
+            handleDateTimeSelect={handleTimeSelect}
+          />
         )}
       </div>
 
-      <div className="field is-grouped">
-        <div className="control">
-          <button
-            className="button is-success is-light is-outlined"
-            onClick={() => addTask()}
-          >
-            Add Task
-          </button>
-        </div>
-        <div className="control">
-          <button
-            className="button is-link is-light is-outlined"
-            onClick={() => handleFormClose()}
-          >
-            Cancel
-          </button>
-        </div>
-      </div>
+      <FormButtons
+        button1Click={addTask}
+        button1Text={"Add Task"}
+        button2Click={handleFormClose}
+        button2Text={"Cancel"}
+      />
     </div>
   ) : (
     <div>

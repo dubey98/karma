@@ -10,8 +10,12 @@ import {
   updateDoc,
   deleteDoc,
   serverTimestamp,
+  getDoc,
+  collectionGroup,
 } from "firebase/firestore";
-import { AuthContextProvider, useAuth } from "./useAuth";
+import { useAuth } from "./useAuth";
+import * as constants from "./../constants";
+import moment from "moment";
 
 const db = getFirestore();
 
@@ -35,29 +39,43 @@ function useTaskProvider() {
   const [tasks, setTasks] = useState([]);
   const [reloadTaskFlag, setReloadTaskFlag] = useState(false);
   const [reloadProjects, setReloadProjects] = useState(false);
+  const [defaultProjects, setDefaultProjects] = useState([]);
+  const [todaysTask, setTodaysTask] = useState([]);
 
   useEffect(() => {
     async function getProjects() {
       if (auth.user) {
         console.log(fs, "projects");
+
+        const defaultProjectQuery = query(doc(db, "users", auth.user.uid));
+
+        let snap = await getDoc(defaultProjectQuery);
+        const defaultProjectId = snap.data().defaultProjectId;
+
         const q = query(
           collection(db, "projects"),
           where("uid", "==", auth.user.uid)
         );
 
-        const snap = await getDocs(q);
+        snap = await getDocs(q);
+
+        // set projects and current project
         const _projects = [];
+        const _defaultProjects = [];
         snap.forEach((value) => {
-          _projects.push({ ...value.data(), id: value.id });
+          if (value.id === defaultProjectId.trim()) {
+            _defaultProjects.push({ ...value.data(), id: value.id });
+          } else {
+            _projects.push({ ...value.data(), id: value.id });
+          }
         });
 
         setProjects(_projects);
-        const _currentProject = _projects.find(
-          (value) => value.title == "INBOX"
-        );
-        setCurrentProject(_currentProject.id);
+        setDefaultProjects(_defaultProjects);
+        setCurrentProject(defaultProjectId.trim());
       } else {
         setProjects([]);
+        setDefaultProjects([]);
         setCurrentProject(null);
       }
     }
@@ -70,16 +88,62 @@ function useTaskProvider() {
     async function _getTasks() {
       if (auth.user && currentProject) {
         console.log(fs, "tasks");
-        const q = query(collection(db, "projects", currentProject, "tasks"));
+        if (
+          constants.defaultProjectIds.find(
+            (projectId) => currentProject === projectId
+          )
+        ) {
+          // const q1 = query(
+          //   collection(db, "projects"),
+          //   where("uid", "==", auth.user.uid)
+          // );
+          // const snapShot = await getDocs(q1);
+          // const _tasks = [];
+          // //console.log(snapShot.docs);
+          // const projectIds = [];
+          // snapShot.docs.forEach(async (snap) => {
+          //   const projectId = snap.id;
+          //   projectIds.push(projectId);
+          // });
+          // console.log(projectIds);
+          // projectIds.forEach(async (projectId) => {
+          //   const q2 = query(
+          //     collection(db, "projects", projectId, "tasks"),
+          //     where("dueDate", "<", parseInt(constants.getNextDayTimeStamp())),
+          //     where("dueDate", ">", parseInt(constants.getPrevDayTimeStamp()))
+          //   );
+          //   const result = await getDocs(q2);
+          //   result.forEach((value) => {
+          //     _tasks.push({ ...value.data(), id: value.id });
+          //   });
+          // });
+          const q3 = query(
+            collectionGroup(
+              db,
+              "tasks",
+              where("uid", "==", auth.user.id),
+              where("dueDate", "<", parseInt(constants.getNextDayTimeStamp())),
+              where("dueDate", ">", parseInt(constants.getPrevDayTimeStamp()))
+            )
+          );
+          const _tasks = [];
+          const _results = await getDocs(q3);
+          _results.forEach((value) => {
+            _tasks.push({ ...value.data(), id: value.id });
+          });
+          console.log("use state log", _tasks.length);
+          setTasks(_tasks);
+        } else {
+          const q = query(collection(db, "projects", currentProject, "tasks"));
+          const snap = await getDocs(q);
 
-        const snap = await getDocs(q);
+          const _tasks = [];
+          snap.forEach((value) => {
+            _tasks.push({ ...value.data(), id: value.id });
+          });
 
-        const _tasks = [];
-        snap.forEach((value) => {
-          _tasks.push({ ...value.data(), id: value.id });
-        });
-
-        setTasks(_tasks);
+          setTasks(_tasks);
+        }
       } else {
         setTasks([]);
       }
@@ -199,6 +263,7 @@ function useTaskProvider() {
     tasks,
     projects,
     currentProject,
+    defaultProjects,
     // tasks
     addTask,
     updateTask,
