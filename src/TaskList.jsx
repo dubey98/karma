@@ -1,68 +1,74 @@
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { isNumeric, selectPriority } from "./constants";
 import { useGlobals } from "./services/useGlobals";
 import { useTask } from "./services/useTask";
 
 function TaskList() {
   const store = useTask();
+  const [taskTable, setTaskTable] = useState(<></>);
 
-  function mapTasksbyPriority() {
-    const _selectPriority = [...selectPriority];
+  useEffect(() => {
+    //console.log("use effect called", store.tasks.length);
+    const _taskTable = mapTasksbyPriority(store.tasks);
+    setTaskTable(_taskTable);
+    return () => {};
+  }, [store.tasks]);
 
-    const priorityList = _selectPriority
-      .sort((p1, p2) => p2.value - p1.value)
-      .map((priority) => {
-        return { ...priority, tasks: [] };
-      });
-    const tasks = store.tasks;
-    console.log(tasks.length);
-    for (let i = 0; i < tasks.length; i++) {
-      const task = store.tasks[i];
-      let index = priorityList.length - 1;
+  return <div>{taskTable}</div>;
+}
 
-      // find out at which index out task is goinf to go into
-      for (let p = 0; p < priorityList.length; p++) {
-        const priority = priorityList[p];
-        // console.log(priority.value, task.priority);
-        if (parseInt(priority.value) === parseInt(task.priority)) {
-          index = p;
-          break;
-        }
-      }
-      // assign task to that index
-      priorityList[index].tasks.push(task);
-    }
-    const TaskTable = [];
-    console.log(priorityList);
-    priorityList.forEach((p) => {
-      if (p.tasks.length > 0) {
-        const element = (
-          <table
-            className="table is-fullwidth is-hoverable m-0 p-0"
-            key={p.priority}
-          >
-            <thead>
-              <tr>
-                <th>{p.display_name}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {p.tasks.map((task) => {
-                return <Task task={task} key={task.id} />;
-              })}
-            </tbody>
-          </table>
-        );
+function mapTasksbyPriority(taskList) {
+  const _selectPriority = [...selectPriority];
 
-        TaskTable.push(element);
-      }
+  const priorityList = _selectPriority
+    .sort((p1, p2) => p2.value - p1.value)
+    .map((priority) => {
+      return { ...priority, tasks: [] };
     });
+  const tasks = taskList;
+  for (let i = 0; i < tasks.length; i++) {
+    const task = tasks[i];
+    let index = priorityList.length - 1;
 
-    return TaskTable;
+    // find out at which index out task is goinf to go into
+    for (let p = 0; p < priorityList.length; p++) {
+      const priority = priorityList[p];
+      // console.log(priority.value, task.priority);
+      if (parseInt(priority.value) === parseInt(task.priority)) {
+        index = p;
+        break;
+      }
+    }
+    // assign task to that index
+    priorityList[index].tasks.push(task);
   }
+  const TaskTable = [];
+  priorityList.forEach((p) => {
+    if (p.tasks.length > 0) {
+      const element = (
+        <table
+          className="table is-fullwidth is-hoverable m-0 p-0"
+          key={p.priority}
+        >
+          <thead>
+            <tr>
+              <th>{p.display_name}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {p.tasks.map((task) => {
+              return <Task task={task} key={task.id} />;
+            })}
+          </tbody>
+        </table>
+      );
 
-  return <div>{mapTasksbyPriority()}</div>;
+      TaskTable.push(element);
+    }
+  });
+
+  return TaskTable;
 }
 
 function Task({ task }) {

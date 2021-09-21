@@ -40,7 +40,7 @@ function useTaskProvider() {
   const [reloadTaskFlag, setReloadTaskFlag] = useState(false);
   const [reloadProjects, setReloadProjects] = useState(false);
   const [defaultProjects, setDefaultProjects] = useState([]);
-  const [todaysTask, setTodaysTask] = useState([]);
+  const [reloadDefaultTasks, setReloadDefaultTasks] = useState(false);
 
   useEffect(() => {
     async function getProjects() {
@@ -51,12 +51,10 @@ function useTaskProvider() {
 
         let snap = await getDoc(defaultProjectQuery);
         const defaultProjectId = snap.data().defaultProjectId;
-
         const q = query(
           collection(db, "projects"),
           where("uid", "==", auth.user.uid)
         );
-
         snap = await getDocs(q);
 
         // set projects and current project
@@ -64,8 +62,10 @@ function useTaskProvider() {
         const _defaultProjects = [];
         snap.forEach((value) => {
           if (value.id === defaultProjectId.trim()) {
+            // console.log("adding project to default ones", value.id);
             _defaultProjects.push({ ...value.data(), id: value.id });
           } else {
+            // console.log("adding normal projects", value.id);
             _projects.push({ ...value.data(), id: value.id });
           }
         });
@@ -93,47 +93,10 @@ function useTaskProvider() {
             (projectId) => currentProject === projectId
           )
         ) {
-          // const q1 = query(
-          //   collection(db, "projects"),
-          //   where("uid", "==", auth.user.uid)
-          // );
-          // const snapShot = await getDocs(q1);
-          // const _tasks = [];
-          // //console.log(snapShot.docs);
-          // const projectIds = [];
-          // snapShot.docs.forEach(async (snap) => {
-          //   const projectId = snap.id;
-          //   projectIds.push(projectId);
-          // });
-          // console.log(projectIds);
-          // projectIds.forEach(async (projectId) => {
-          //   const q2 = query(
-          //     collection(db, "projects", projectId, "tasks"),
-          //     where("dueDate", "<", parseInt(constants.getNextDayTimeStamp())),
-          //     where("dueDate", ">", parseInt(constants.getPrevDayTimeStamp()))
-          //   );
-          //   const result = await getDocs(q2);
-          //   result.forEach((value) => {
-          //     _tasks.push({ ...value.data(), id: value.id });
-          //   });
-          // });
-          const q3 = query(
-            collectionGroup(
-              db,
-              "tasks",
-              where("uid", "==", auth.user.id),
-              where("dueDate", "<", parseInt(constants.getNextDayTimeStamp())),
-              where("dueDate", ">", parseInt(constants.getPrevDayTimeStamp()))
-            )
-          );
-          const _tasks = [];
-          const _results = await getDocs(q3);
-          _results.forEach((value) => {
-            _tasks.push({ ...value.data(), id: value.id });
-          });
-          console.log("use state log", _tasks.length);
-          setTasks(_tasks);
+          setTasks([]);
+          setReloadDefaultTasks(!reloadDefaultTasks);
         } else {
+          // console.log(currentProject, "currentProject");
           const q = query(collection(db, "projects", currentProject, "tasks"));
           const snap = await getDocs(q);
 
@@ -141,7 +104,6 @@ function useTaskProvider() {
           snap.forEach((value) => {
             _tasks.push({ ...value.data(), id: value.id });
           });
-
           setTasks(_tasks);
         }
       } else {
@@ -153,9 +115,35 @@ function useTaskProvider() {
     return () => {};
   }, [auth.user, currentProject, reloadTaskFlag]);
 
+  useEffect(() => {
+    async function _getTasks() {
+      if (constants.defaultProjectIds.find((pId) => pId === currentProject)) {
+        const q = query(
+          collectionGroup(db, "tasks"),
+          where("uid", "==", auth.user.uid),
+          where("dueDate", ">", new Date(constants.getPrevDayTimeStamp())),
+          where("dueDate", "<", new Date(constants.getNextDayTimeStamp()))
+        );
+
+        const _tasks = [];
+        const snapShot = await getDocs(q);
+        snapShot.forEach((task) => {
+          _tasks.push({ ...task.data(), id: task.id });
+        });
+        setTasks(_tasks);
+      }
+    }
+
+    _getTasks();
+
+    return () => {};
+  }, [auth.user, reloadDefaultTasks]);
+
   async function addTask(_newTask) {
-    if (auth.user) {
+    if (auth.user && _newTask) {
       const taskRef = collection(db, "projects", currentProject, "tasks");
+      _newTask.dueDate = new Date(_newTask.dueDate || Date.now());
+      _newTask.uid = auth.user.uid;
       const newTask = await addDoc(taskRef, {
         ..._newTask,
       });

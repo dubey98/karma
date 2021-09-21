@@ -82,16 +82,21 @@ const TaskForm = () => {
       };
       await store.addTask(newTask);
       setActivated(false);
+      resetForm();
     }
   }
 
   function handleFormClose() {
+    resetForm();
+    setActivated(false);
+  }
+
+  function resetForm() {
     setTitle("");
     setDueDate(Date.now());
     setTitleError("");
     setCustomDueDate(false);
     setPriority(constants.selectPriority[0].value);
-    setActivated(false);
   }
 
   function handleTaskPriority(priority) {
