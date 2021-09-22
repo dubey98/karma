@@ -7,13 +7,13 @@ export function useGlobals() {
 }
 
 export function GlobalContextProvider({ children }) {
-  const global = globalProvider();
+  const global = useGlobalProvider();
   return (
     <glbalContext.Provider value={global}>{children}</glbalContext.Provider>
   );
 }
 
-function globalProvider() {
+function useGlobalProvider() {
   const [taskDetailActivated, setTaskDetailActivated] = useState(false);
   const [detailTask, setDetailTask] = useState(null);
 

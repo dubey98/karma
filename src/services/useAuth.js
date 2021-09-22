@@ -13,11 +13,11 @@ export function useAuth() {
 }
 
 export function AuthContextProvider({ children }) {
-  const auth = authProvider();
+  const auth = useAuthProvider();
   return <authContext.Provider value={auth}>{children}</authContext.Provider>;
 }
 
-function authProvider() {
+function useAuthProvider() {
   const [user, setUser] = useState(null);
 
   const auth = getAuth();

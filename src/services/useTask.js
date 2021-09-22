@@ -1,4 +1,4 @@
-import react, { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import {
   collection,
   doc,
@@ -8,14 +8,13 @@ import {
   getDocs,
   addDoc,
   updateDoc,
-  deleteDoc,
+  setDoc,
   serverTimestamp,
   getDoc,
   collectionGroup,
 } from "firebase/firestore";
 import { useAuth } from "./useAuth";
 import * as constants from "./../constants";
-import moment from "moment";
 
 const db = getFirestore();
 
@@ -41,6 +40,7 @@ function useTaskProvider() {
   const [reloadProjects, setReloadProjects] = useState(false);
   const [defaultProjects, setDefaultProjects] = useState([]);
   const [reloadDefaultTasks, setReloadDefaultTasks] = useState(false);
+  const [defaultProjectId, setDefaultProjectId] = useState(null);
 
   useEffect(() => {
     async function getProjects() {
@@ -51,9 +51,11 @@ function useTaskProvider() {
 
         let snap = await getDoc(defaultProjectQuery);
         const defaultProjectId = snap.data().defaultProjectId;
+        setDefaultProjectId(defaultProjectId);
         const q = query(
           collection(db, "projects"),
-          where("uid", "==", auth.user.uid)
+          where("uid", "==", auth.user.uid),
+          where("archived", "==", false)
         );
         snap = await getDocs(q);
 
@@ -94,16 +96,22 @@ function useTaskProvider() {
           )
         ) {
           setTasks([]);
-          setReloadDefaultTasks(!reloadDefaultTasks);
+          setReloadDefaultTasks((reloadDefaultTasks) => !reloadDefaultTasks);
         } else {
-          // console.log(currentProject, "currentProject");
-          const q = query(collection(db, "projects", currentProject, "tasks"));
+          const q = query(
+            collection(db, "projects", currentProject, "tasks"),
+            where("archived", "==", false),
+            where("completed", "==", false)
+          );
           const snap = await getDocs(q);
 
           const _tasks = [];
           snap.forEach((value) => {
-            _tasks.push({ ...value.data(), id: value.id });
+            const _task = { ...value.data(), id: value.id };
+            _task.dueDate = _task.dueDate.toDate();
+            _tasks.push(_task);
           });
+
           setTasks(_tasks);
         }
       } else {
@@ -118,17 +126,34 @@ function useTaskProvider() {
   useEffect(() => {
     async function _getTasks() {
       if (constants.defaultProjectIds.find((pId) => pId === currentProject)) {
-        const q = query(
-          collectionGroup(db, "tasks"),
-          where("uid", "==", auth.user.uid),
-          where("dueDate", ">", new Date(constants.getPrevDayTimeStamp())),
-          where("dueDate", "<", new Date(constants.getNextDayTimeStamp()))
-        );
+        const q =
+          currentProject.toString() === "0"
+            ? query(
+                collectionGroup(db, "tasks"),
+                where("uid", "==", auth.user.uid),
+                where("archived", "==", false),
+                where("completed", "==", false),
+                where(
+                  "dueDate",
+                  ">",
+                  new Date(constants.getPrevDayTimeStamp())
+                ),
+                where("dueDate", "<", new Date(constants.getNextDayTimeStamp()))
+              )
+            : query(
+                collectionGroup(db, "tasks"),
+                where("uid", "==", auth.user.uid),
+                where("archived", "==", false),
+                where("completed", "==", false),
+                where("dueDate", ">", new Date(constants.getPrevDayTimeStamp()))
+              );
 
         const _tasks = [];
         const snapShot = await getDocs(q);
-        snapShot.forEach((task) => {
-          _tasks.push({ ...task.data(), id: task.id });
+        snapShot.forEach((value) => {
+          const _task = { ...value.data(), id: value.id };
+          _task.dueDate = _task.dueDate.toDate();
+          _tasks.push(_task);
         });
         setTasks(_tasks);
       }
@@ -137,13 +162,23 @@ function useTaskProvider() {
     _getTasks();
 
     return () => {};
-  }, [auth.user, reloadDefaultTasks]);
+  }, [auth.user, reloadDefaultTasks, currentProject]);
 
   async function addTask(_newTask) {
     if (auth.user && _newTask) {
-      const taskRef = collection(db, "projects", currentProject, "tasks");
-      _newTask.dueDate = new Date(_newTask.dueDate || Date.now());
+      console.log(_newTask);
+      _newTask.dueDate = new Date(_newTask.dueDate) || null;
       _newTask.uid = auth.user.uid;
+      _newTask.archived = false;
+      let project = currentProject;
+      constants.defaultProjectIds.forEach((pId) => {
+        if (currentProject.toString().trim() === pId.toString().trim()) {
+          project = defaultProjectId;
+        }
+      });
+
+      const taskRef = collection(db, "projects", project, "tasks");
+
       const newTask = await addDoc(taskRef, {
         ..._newTask,
       });
@@ -155,7 +190,7 @@ function useTaskProvider() {
   async function updateTask(taskId, updatedTask) {
     if (auth.user) {
       const taskRef = doc(db, "projects", currentProject, "tasks", taskId);
-      const updateRef = await updateDoc(taskRef, {
+      await updateDoc(taskRef, {
         ...updatedTask,
         timestamp: serverTimestamp(),
       });
@@ -168,7 +203,7 @@ function useTaskProvider() {
   async function deleteTask(taskId) {
     if (auth.user && taskId) {
       const taskRef = doc(db, "projects", currentProject, "tasks", taskId);
-      const deleteRef = await deleteDoc(taskRef);
+      await setDoc(taskRef, { archived: true }, { merge: true });
       setReloadTaskFlag(!reloadTaskFlag);
     } else {
       console.log("user not logged in ", "delete ");
@@ -182,10 +217,10 @@ function useTaskProvider() {
         description,
         timestamp: serverTimestamp(),
         uid: auth.user.uid,
+        archived: false,
       };
       const projectRef = collection(db, "projects");
       const newProject = await addDoc(projectRef, { ..._project });
-      console.log(newProject);
       setReloadProjects(!reloadProjects);
       return newProject.id;
     } else {
@@ -194,14 +229,21 @@ function useTaskProvider() {
   }
 
   async function deleteProject(projectId) {
-    if (auth.user && projectId && projectId !== currentProject) {
+    if (auth.user && projectId && projectId !== defaultProjectId) {
       const projectRef = doc(db, "projects", projectId);
       const q = query(collection(db, "projects", projectId, "tasks"));
-      const _tasks = await getDoc(q);
-      _tasks.forEach(async (value) => {
-        await deleteDoc(doc("projects", projectId, "tasks", value.id));
+      const _tasksSnap = await getDoc(q);
+      _tasksSnap.forEach(async (value) => {
+        await updateDoc(doc(db, "projects", projectId, "tasks", value.id), {
+          ...value.data(),
+          archived: true,
+        });
       });
-      await deleteDoc(projectRef);
+      const project = await getDoc(projectRef);
+      await updateDoc(projectRef, {
+        ...project,
+        archived: true,
+      });
       setReloadProjects(!reloadProjects);
       return;
     } else {
@@ -244,6 +286,7 @@ function useTaskProvider() {
         return task;
       });
       setTasks(_tasks);
+      setReloadTaskFlag(!reloadTaskFlag);
     }
   }
 

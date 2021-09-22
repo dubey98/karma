@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "./services/firebase";
 import Navbar from "./Navbar";
 import TaskList from "./TaskList";
@@ -10,8 +10,6 @@ import Seo from "./services/Seo";
 import TaskDetail from "./components/TaskDetail";
 
 const App = () => {
-  const [modalActivated, setModalActivated] = useState(false);
-
   return (
     <Router>
       <Seo />

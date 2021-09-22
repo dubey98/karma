@@ -1,19 +1,23 @@
 import moment from "moment";
 import React, { useState, useEffect } from "react";
-import { isNumeric, selectPriority } from "./constants";
-import { useGlobals } from "./services/useGlobals";
+import { selectPriority } from "./constants";
 import { useTask } from "./services/useTask";
+import TaskRow from "./components/TaskRow";
 
 function TaskList() {
   const store = useTask();
   const [taskTable, setTaskTable] = useState(<></>);
 
   useEffect(() => {
-    //console.log("use effect called", store.tasks.length);
-    const _taskTable = mapTasksbyPriority(store.tasks);
-    setTaskTable(_taskTable);
+    if (store.currentProject) {
+      const _taskTable =
+        store.currentProject.toString() === "1"
+          ? mapTaskByDueDate(store.tasks)
+          : mapTasksbyPriority(store.tasks);
+      setTaskTable(_taskTable);
+    }
     return () => {};
-  }, [store.tasks]);
+  }, [store.tasks, store.currentProject]);
 
   return <div>{taskTable}</div>;
 }
@@ -43,22 +47,50 @@ function mapTasksbyPriority(taskList) {
     // assign task to that index
     priorityList[index].tasks.push(task);
   }
+
+  return mapTaskTable(priorityList);
+}
+
+function mapTaskByDueDate(taskList) {
+  const sortOrder = [];
+  for (let i = 1; i < 30; i++) {
+    let taskListObj = {
+      display_name: moment(new Date()).add(i, "days").format("MMMM Do"),
+      key: i,
+      tasks: [],
+    };
+    const startDate = new Date(
+      moment(new Date().setHours(0, 0, 0, 0)).add(i - 1, "days")
+    ).getTime();
+    const endDate = new Date(
+      moment(new Date().setHours(0, 0, 0, 0)).add(i, "days")
+    ).getTime();
+    taskListObj.tasks = taskList.filter((task) => {
+      const dueDate = new Date(task.dueDate).getTime();
+      return dueDate > startDate && dueDate < endDate;
+    });
+    sortOrder.push(taskListObj);
+  }
+  return mapTaskTable(sortOrder);
+}
+
+function mapTaskTable(organizedTaskLists) {
   const TaskTable = [];
-  priorityList.forEach((p) => {
-    if (p.tasks.length > 0) {
+  organizedTaskLists.forEach((separator) => {
+    if (separator.tasks.length > 0) {
       const element = (
         <table
           className="table is-fullwidth is-hoverable m-0 p-0"
-          key={p.priority}
+          key={separator.key}
         >
           <thead>
             <tr>
-              <th>{p.display_name}</th>
+              <th>{separator.display_name}</th>
             </tr>
           </thead>
           <tbody>
-            {p.tasks.map((task) => {
-              return <Task task={task} key={task.id} />;
+            {separator.tasks.map((task) => {
+              return <TaskRow task={task} key={task.id} />;
             })}
           </tbody>
         </table>
@@ -69,66 +101,6 @@ function mapTasksbyPriority(taskList) {
   });
 
   return TaskTable;
-}
-
-function Task({ task }) {
-  const store = useTask();
-  const globals = useGlobals();
-
-  function selectBackground() {
-    let className = "columns p-0 m-0 ";
-
-    if (
-      new Date(task.dueDate).getTime() <
-      new Date(moment(new Date()).subtract(1, "days")).getTime()
-    ) {
-      className += "has-background-danger-light";
-    } else if (new Date(task.dueDate).getTime() < new Date().getTime()) {
-      className += "has-background-warning-light";
-    }
-    return className;
-  }
-
-  function handleTaskClick() {
-    globals.activateTaskDetailModal(task);
-  }
-
-  return (
-    <tr>
-      <td className={selectBackground()}>
-        <div className="column is-narrow is-flex is-justify-content-center is-narrow">
-          <div
-            className="icon is-align-self-center"
-            onClick={() => store.changeTaskStatus(task.id, !task.completed)}
-          >
-            {task.completed ? (
-              <i className="fas fa-check-circle"></i>
-            ) : (
-              <i className="far fa-circle"></i>
-            )}
-          </div>
-        </div>
-        <div
-          className="column is-flex is-clickable"
-          onClick={() => handleTaskClick()}
-        >
-          <div className="is-align-self-center">{task.title}</div>
-        </div>
-        <div className="column is-narrow is-flex">
-          <div className="is-align-self-center">
-            {moment(task.dueDate).calendar()}
-          </div>
-        </div>
-
-        <div
-          className="column is-narrow is-flex"
-          onClick={async () => await store.deleteTask(task.id)}
-        >
-          <button className="delete is-align-self-center"></button>
-        </div>
-      </td>
-    </tr>
-  );
 }
 
 export default TaskList;

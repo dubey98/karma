@@ -1,30 +1,37 @@
 import moment from "moment";
 
+export const defaultDueDate = "01/01/1970";
+
 export const selectPriority = [
   {
     priority: "select priority",
     value: 1,
     display_name: "For later",
+    key: 1,
   },
   {
     priority: "Urgent",
     value: 5,
     display_name: "Urgent tasks",
+    key: 2,
   },
   {
     priority: "High",
     value: 4,
     display_name: "High priority tasks",
+    key: 3,
   },
   {
     priority: "Medium",
     value: 3,
     display_name: "Medium priority tasks",
+    key: 4,
   },
   {
     priority: "Low",
     value: 2,
     display_name: "Low priority tasks ",
+    key: 5,
   },
 ];
 
@@ -41,7 +48,7 @@ export function selectDateTime(dateTime, source, initialDateTime) {
     _date = new Date(dateTime).getTime();
   } else if (source === "date") {
     _date = new Date(dateTime);
-  } else if (source == "time") {
+  } else if (source === "time") {
     const timeFragment = dateTime.split(":");
     _date = new Date(initialDateTime).setHours(
       timeFragment[0],

@@ -24,8 +24,7 @@ const Navbar = () => {
             </span>
           </Link>
 
-          <a
-            role="button"
+          <button
             className="navbar-burger has-text-weight-bold"
             aria-label="menu"
             aria-expanded="false"
@@ -35,11 +34,11 @@ const Navbar = () => {
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
-          </a>
+          </button>
         </div>
 
         <div id="navbarMain" className="navbar-menu">
-          <div className="navbar-start">
+          {/* <div className="navbar-start">
             <div className="navbar-item">
               <Link to="/">Home</Link>
             </div>
@@ -47,33 +46,33 @@ const Navbar = () => {
             <Link to="/projects" className="navbar-item">
               More
             </Link>
-          </div>
+          </div> */}
 
           <div className="navbar-end">
             <div className="navbar-item">
               {auth.user ? (
                 <div className="buttons">
-                  <a
+                  <button
                     className="button has-background-success-light"
                     onClick={() => auth.signOut()}
                   >
                     Log Out
-                  </a>
+                  </button>
                 </div>
               ) : (
                 <div className="buttons">
-                  <a
+                  <button
                     className="button has-background-success-light"
                     onClick={() => auth.signIn()}
                   >
                     <strong>Sign up</strong>
-                  </a>
-                  <a
+                  </button>
+                  <button
                     className="button has-background-success-light"
                     onClick={() => auth.signIn()}
                   >
                     Log in
-                  </a>
+                  </button>
                 </div>
               )}
             </div>

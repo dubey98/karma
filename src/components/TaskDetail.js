@@ -12,15 +12,12 @@ const TaskDetail = () => {
   const task = globals.detailTask;
   const store = useTask();
   // return prematurely if task is not defined
-  if (!task) {
-    return <div></div>;
-  }
 
   //form states
-  const [title, setTitle] = useState(task.title);
-  const [description, setDescription] = useState(task.description);
-  const [priority, setPriority] = useState(task.priority);
-  const [dueDate, setDueDate] = useState(task.dueDate);
+  const [title, setTitle] = useState(task ? task.title : "");
+  const [description, setDescription] = useState(task ? task.description : "");
+  const [priority, setPriority] = useState(task ? task.priority : 1);
+  const [dueDate, setDueDate] = useState(task ? task.dueDate : null);
   const [customDueDate, setCustomDueDate] = useState(false);
 
   function handleTaskPriority(priority) {
@@ -59,7 +56,7 @@ const TaskDetail = () => {
             <div className="field">
               <label className="label">
                 <span className="icon">
-                  <i class="fas fa-tasks"></i>
+                  <i className="fas fa-tasks"></i>
                 </span>
                 <span>Task Title</span>
               </label>
@@ -94,7 +91,6 @@ const TaskDetail = () => {
 
             <div className="field">
               <div className="control">
-                {" "}
                 <strong>Due Date : </strong> {moment(dueDate).calendar()}
               </div>
             </div>

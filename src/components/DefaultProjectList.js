@@ -15,7 +15,6 @@ const DefaultProjectList = () => {
   const projects = [...store.defaultProjects, todaysProject, upcomingProject];
 
   function handleProjectClick(projectId) {
-    console.log("changing project id ", projectId);
     store.changeCurrentProject(projectId);
   }
 

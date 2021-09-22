@@ -6,8 +6,6 @@ import DefaultProjectList from "./components/DefaultProjectList";
 function ProjectList() {
   const store = useTask();
   const [activated, setActivated] = useState(false);
-  const [title, setTitle] = useState("");
-  const [titleError, setTitleError] = useState("");
 
   async function handleChangeProject(projectId) {
     await store.changeCurrentProject(projectId);

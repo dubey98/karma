@@ -12,7 +12,7 @@ const TaskForm = () => {
   const [activated, setActivated] = useState(false);
   const [title, setTitle] = useState("");
   const [titleError, setTitleError] = useState("");
-  const [dueDate, setDueDate] = useState(Date.now());
+  const [dueDate, setDueDate] = useState(null);
   const [priority, setPriority] = useState(constants.selectPriority[0].value);
   const [customDueDate, setCustomDueDate] = useState(false);
 

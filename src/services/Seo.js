@@ -4,7 +4,7 @@ import React from "react";
 const Seo = () => {
   const title = "Karma";
   const description = "A TODO App";
-  const keywords = ["karma", "todo", "react", "app", "SPA"];
+  //const keywords = ["karma", "todo", "react", "app", "SPA"];
   return (
     <Helmet>
       <title>{title}</title>
