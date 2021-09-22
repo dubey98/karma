@@ -1,23 +1,20 @@
 {
   "files": {
-    "main.css": "/karma/static/css/main.2ef8192f.chunk.css",
-    "main.js": "/karma/static/js/main.fdb4ad5b.chunk.js",
-    "main.js.map": "/karma/static/js/main.fdb4ad5b.chunk.js.map",
+    "main.css": "/karma/static/css/main.eaac07eb.chunk.css",
+    "main.js": "/karma/static/js/main.39cf742b.chunk.js",
+    "main.js.map": "/karma/static/js/main.39cf742b.chunk.js.map",
     "runtime-main.js": "/karma/static/js/runtime-main.008da7be.js",
     "runtime-main.js.map": "/karma/static/js/runtime-main.008da7be.js.map",
-    "static/css/2.41953c31.chunk.css": "/karma/static/css/2.41953c31.chunk.css",
-    "static/js/2.6a4d78f3.chunk.js": "/karma/static/js/2.6a4d78f3.chunk.js",
-    "static/js/2.6a4d78f3.chunk.js.map": "/karma/static/js/2.6a4d78f3.chunk.js.map",
+    "static/js/2.2089e208.chunk.js": "/karma/static/js/2.2089e208.chunk.js",
+    "static/js/2.2089e208.chunk.js.map": "/karma/static/js/2.2089e208.chunk.js.map",
     "index.html": "/karma/index.html",
-    "static/css/2.41953c31.chunk.css.map": "/karma/static/css/2.41953c31.chunk.css.map",
-    "static/css/main.2ef8192f.chunk.css.map": "/karma/static/css/main.2ef8192f.chunk.css.map",
-    "static/js/2.6a4d78f3.chunk.js.LICENSE.txt": "/karma/static/js/2.6a4d78f3.chunk.js.LICENSE.txt"
+    "static/css/main.eaac07eb.chunk.css.map": "/karma/static/css/main.eaac07eb.chunk.css.map",
+    "static/js/2.2089e208.chunk.js.LICENSE.txt": "/karma/static/js/2.2089e208.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.008da7be.js",
-    "static/css/2.41953c31.chunk.css",
-    "static/js/2.6a4d78f3.chunk.js",
-    "static/css/main.2ef8192f.chunk.css",
-    "static/js/main.fdb4ad5b.chunk.js"
+    "static/js/2.2089e208.chunk.js",
+    "static/css/main.eaac07eb.chunk.css",
+    "static/js/main.39cf742b.chunk.js"
   ]
 }
