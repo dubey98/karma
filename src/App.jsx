@@ -1,6 +1,6 @@
 import React from "react";
 import "./services/firebase";
-import Navbar from "./Navbar";
+import Navbar from "./components/Navbar";
 import TaskList from "./TaskList";
 import TaskForm from "./TaskForm";
 import { BrowserRouter as Router } from "react-router-dom";

@@ -1,6 +1,6 @@
 import moment from "moment";
 
-export const defaultDueDate = "01/01/1970";
+export const defaultDueDate = "1970-01-01T00:00:00.000Z";
 
 export const selectPriority = [
   {
@@ -10,25 +10,25 @@ export const selectPriority = [
     key: 1,
   },
   {
-    priority: "Urgent",
+    priority: "p5 Urgent",
     value: 5,
     display_name: "Urgent tasks",
     key: 2,
   },
   {
-    priority: "High",
+    priority: "p4 High",
     value: 4,
     display_name: "High priority tasks",
     key: 3,
   },
   {
-    priority: "Medium",
+    priority: "p3 Medium",
     value: 3,
     display_name: "Medium priority tasks",
     key: 4,
   },
   {
-    priority: "Low",
+    priority: "p2 Low",
     value: 2,
     display_name: "Low priority tasks ",
     key: 5,

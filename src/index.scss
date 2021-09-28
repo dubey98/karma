@@ -3,3 +3,12 @@
 .border {
   border: 1px solid black;
 }
+
+$color-warning-light: hsl(48, 100%, 96%);
+$color-danger-light: hsl(347, 90%, 96%);
+$background-grey-light: hsl(0, 0%, 71%);
+
+.border-gray-light {
+  border: 2px solid $background-grey-light;
+  border-radius: 10px;
+}

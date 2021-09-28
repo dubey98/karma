@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useGlobals } from "../services/useGlobals";
 import DropDown from "./DropDown";
 import DateAndTimeSelector from "./DateAndTimeSelector";
@@ -20,6 +20,18 @@ const TaskDetail = () => {
   const [dueDate, setDueDate] = useState(task ? task.dueDate : null);
   const [customDueDate, setCustomDueDate] = useState(false);
 
+  useEffect(() => {
+    if (globals.detailTask) {
+      const task = globals.detailTask;
+
+      setTitle(task.title);
+      setDescription(task.description);
+      setPriority(task.priority);
+      setDueDate(task.dueDate);
+    }
+    return () => {};
+  }, [globals.detailTask]);
+
   function handleTaskPriority(priority) {
     setPriority(priority);
   }
@@ -40,11 +52,6 @@ const TaskDetail = () => {
 
   function handleCancel() {
     globals.deactivateTaskDetailModal();
-  }
-
-  function handleTimeSelect(dateTime, source) {
-    let _date = constants.selectDateTime(dateTime, source, dueDate);
-    setDueDate(_date);
   }
 
   return (
@@ -114,8 +121,8 @@ const TaskDetail = () => {
                 </div>
               ) : (
                 <DateAndTimeSelector
-                  initialDateTime={dueDate}
-                  handleDateTimeSelect={handleTimeSelect}
+                  dateTime={dueDate}
+                  setDateTime={setDueDate}
                 />
               )}
             </div>

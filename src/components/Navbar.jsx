@@ -1,5 +1,5 @@
 import React from "react";
-import { useAuth } from "./services/useAuth";
+import { useAuth } from "./../services/useAuth";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {

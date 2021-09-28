@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useTask } from "./services/useTask";
 import * as constants from "./constants";
-import moment from "moment";
-import DropDown from "./components/DropDown";
 import DateAndTimeSelector from "./components/DateAndTimeSelector";
 import FormButtons from "./components/FormButtons";
+// import PriorityTags from "./components/PriorityTags";
+import DropDown from "./components/DropDown";
 
 const TaskForm = () => {
   const store = useTask();
@@ -12,70 +12,15 @@ const TaskForm = () => {
   const [activated, setActivated] = useState(false);
   const [title, setTitle] = useState("");
   const [titleError, setTitleError] = useState("");
-  const [dueDate, setDueDate] = useState(null);
+  const [dueDate, setDueDate] = useState(constants.defaultDueDate);
+  const [description, setDescription] = useState("");
   const [priority, setPriority] = useState(constants.selectPriority[0].value);
-  const [customDueDate, setCustomDueDate] = useState(false);
-
-  const scheduleTags = [
-    {
-      tag: "Today 9:00AM",
-      date: new Date().setHours(9, 0, 0, 0),
-    },
-    {
-      tag: "Today 12:00AM",
-      date: new Date().setHours(12, 0, 0, 0),
-    },
-    {
-      tag: "Today 03:00PM",
-      date: new Date().setHours(15, 0, 0, 0),
-    },
-    {
-      tag: "Today 06:00PM",
-      date: new Date().setHours(18, 0, 0, 0),
-    },
-    {
-      tag: "Tom 09:00AM",
-      date: new Date(moment(new Date()).add(1, "days").format()).setHours(
-        9,
-        0,
-        0,
-        0
-      ),
-    },
-    {
-      tag: "Tom 12:00PM",
-      date: new Date(moment(new Date()).add(1, "days").format()).setHours(
-        12,
-        0,
-        0,
-        0
-      ),
-    },
-    {
-      tag: "Tom 03:00PM",
-      date: new Date(moment(new Date()).add(1, "days").format()).setHours(
-        15,
-        0,
-        0,
-        0
-      ),
-    },
-    {
-      tag: "Tom 06:00PM",
-      date: new Date(moment(new Date()).add(1, "days").format()).setHours(
-        18,
-        0,
-        0,
-        0
-      ),
-    },
-  ];
 
   async function addTask() {
     if (validateInput()) {
       const newTask = {
         title: title,
-        description: "",
+        description: description,
         completed: false,
         dueDate: dueDate,
         priority: priority,
@@ -93,15 +38,10 @@ const TaskForm = () => {
 
   function resetForm() {
     setTitle("");
-    setDueDate(Date.now());
+    setDueDate(constants.defaultDueDate);
     setTitleError("");
-    setCustomDueDate(false);
     setPriority(constants.selectPriority[0].value);
-  }
-
-  function handleTaskPriority(priority) {
-    console.log("setting priority", priority);
-    setPriority(priority);
+    setDescription("");
   }
 
   function validateInput() {
@@ -113,100 +53,71 @@ const TaskForm = () => {
     return result;
   }
 
-  function handleTimeSelect(dateTime, source) {
-    let _date = constants.selectDateTime(dateTime, source);
-    setDueDate(_date);
+  function setDateTime(dateTime) {
+    setDueDate(dateTime);
   }
 
-  function mapScheduleTags() {
-    const elligibleTags = scheduleTags.filter((tag) => {
-      if (new Date(tag.date).getTime() < new Date().getTime()) {
-        return false;
-      } else return true;
-    });
-    return elligibleTags.map((tag) => {
-      return (
-        <span
-          className={
-            tag.date === dueDate
-              ? "tag is-primary is-small is-clickable"
-              : "tag is-light is-primary is-small is-clickable"
-          }
-          onClick={(e) => handleTimeSelect(tag.date, "tags")}
-          key={tag.tag}
-        >
-          <span>{tag.tag}</span>
-
-          <span className="icon is-small">
-            <i className="far fa-clock"></i>
-          </span>
-        </span>
-      );
-    });
+  function handleTaskPriority(priority) {
+    console.log(priority);
+    setPriority(priority);
   }
 
   return activated ? (
-    <div className="box block">
-      <div className="field">
-        <label className="label">Task Title</label>
-        <div className="control has-icons-left has-icons-right">
-          <input
-            className="input"
-            type="text"
-            placeholder="Bring milk and sweets"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            onFocus={() => setTitleError("")}
-          />
-          <span className="icon is-small is-left">
-            <i className="fas fa-tasks"></i>
-          </span>
-          <span className="icon is-small is-right">
-            <i className="fas fa-check"></i>
-          </span>
+    <div className="block">
+      <div className="p-2 border-gray-light">
+        <div className="field">
+          <div className="control has-icons-left has-icons-right">
+            <input
+              className="input"
+              type="text"
+              placeholder="Bring milk and sweets"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              onFocus={() => setTitleError("")}
+            />
+            <span className="icon is-small is-left">
+              <i className="fas fa-tasks"></i>
+            </span>
+            <span className="icon is-small is-right">
+              <i className="fas fa-check"></i>
+            </span>
+          </div>
+          <p className="help is-danger">{titleError}</p>
         </div>
-        <p className="help is-danger">{titleError}</p>
-      </div>
-      <div className="field">
-        <div className="control">
-          <div className="tags">
-            <span className="tag border">select duedate from tags : </span>
-            {mapScheduleTags()}
+
+        <div className="field">
+          <textarea
+            className="textarea has-fixed-size"
+            placeholder="Enter the task description here"
+            rows="2"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          ></textarea>
+        </div>
+
+        <div className="field columns is-justify-content-space-between">
+          <div className="column is-narrow pb-0">
+            <DropDown
+              initialValue={priority}
+              handleValueChange={handleTaskPriority}
+              dropDownOptions={constants.selectPriority}
+            />
+            {/* <PriorityTags priority={priority} setPriority={setPriority} /> */}
+          </div>
+          <div className="column is-narrow">
+            <DateAndTimeSelector dateTime={dueDate} setDateTime={setDateTime} />
           </div>
         </div>
       </div>
 
-      <div className="field is-grouped">
-        <DropDown
-          handleValueChange={handleTaskPriority}
-          initialValue={priority}
-          dropDownOptions={constants.selectPriority}
+      <div className="p-1">
+        <FormButtons
+          button1Click={addTask}
+          button1Text={"Add Task"}
+          button2Click={handleFormClose}
+          button2Text={"Cancel"}
         />
-        {!customDueDate ? (
-          <div className="field">
-            <div className="control">
-              <div
-                className="button is-outlined is-info is-light"
-                onClick={() => setCustomDueDate(!customDueDate)}
-              >
-                Custom due date
-              </div>
-            </div>
-          </div>
-        ) : (
-          <DateAndTimeSelector
-            initialDateTime={dueDate}
-            handleDateTimeSelect={handleTimeSelect}
-          />
-        )}
       </div>
-
-      <FormButtons
-        button1Click={addTask}
-        button1Text={"Add Task"}
-        button2Click={handleFormClose}
-        button2Text={"Cancel"}
-      />
     </div>
   ) : (
     <div>

@@ -30,7 +30,9 @@ function mapTasksbyPriority(taskList) {
     .map((priority) => {
       return { ...priority, tasks: [] };
     });
-  const tasks = taskList;
+  const tasks = taskList.sort((p1, p2) => {
+    return new Date(p1.dueDate).getTime() - new Date(p2.dueDate).getTime();
+  });
   for (let i = 0; i < tasks.length; i++) {
     const task = tasks[i];
     let index = priorityList.length - 1;

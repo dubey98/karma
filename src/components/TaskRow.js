@@ -35,7 +35,7 @@ function TaskRow({ task }) {
 
   return (
     <tr>
-      <td className="columns p-0 m-0">
+      <td className="columns p-0 m-0 is-mobile">
         <div
           className="column is-narrow is-flex is-justify-content-center"
           style={style}
@@ -60,7 +60,8 @@ function TaskRow({ task }) {
             {task.title}
             <br />
 
-            {moment(task.dueDate).calendar() !== defaultDueDate && (
+            {new Date(task.dueDate).getTime() !==
+              new Date(defaultDueDate).getTime() && (
               <span className="tags">
                 <span className={selectClassName()}>
                   {moment(task.dueDate).calendar()}
@@ -78,11 +79,6 @@ function TaskRow({ task }) {
           onClick={async () => await store.deleteTask(task.id)}
           style={style}
         >
-          {task.description && (
-            <span className="icon is-align-self-center">
-              <i className="fas fa-align-left fa-sm"></i>
-            </span>
-          )}
           <button className="delete is-align-self-center"></button>
         </div>
       </td>
