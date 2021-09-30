@@ -8,35 +8,46 @@ import { TaskContextProvider } from "./services/useTask";
 import ProjectList from "./ProjectList";
 import Seo from "./services/Seo";
 import TaskDetail from "./components/TaskDetail";
+import { useAuth } from "./services/useAuth";
+import HomePage from "./components/HomePage";
 
 const App = () => {
+  const auth = useAuth();
+
   return (
     <Router>
       <Seo />
       <div>
         <Navbar />
       </div>
-      <section className="section has-text-light">
-        <TaskContextProvider>
-          <TaskDetail />
-          <div
-            className="columns container"
-            style={{ marginLeft: "auto", marginRight: "auto" }}
-          >
-            <div className="column is-one-fifth">
-              <ProjectList />
-            </div>
-            <div className="column">
-              <div className="block">
-                <TaskList />
+
+      {auth.user ? (
+        <section className="section">
+          <TaskContextProvider>
+            <TaskDetail />
+            <div
+              className="columns container"
+              style={{ marginLeft: "auto", marginRight: "auto" }}
+            >
+              <div className="column is-one-fifth">
+                <ProjectList />
               </div>
-              <div className="block">
-                <TaskForm />
+              <div className="column">
+                <div className="block">
+                  <TaskList />
+                </div>
+                <div className="block">
+                  <TaskForm />
+                </div>
               </div>
             </div>
-          </div>
-        </TaskContextProvider>
-      </section>
+          </TaskContextProvider>
+        </section>
+      ) : (
+        <div className="">
+          <HomePage />
+        </div>
+      )}
     </Router>
   );
 };

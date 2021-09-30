@@ -38,16 +38,6 @@ const Navbar = () => {
         </div>
 
         <div id="navbarMain" className="navbar-menu">
-          {/* <div className="navbar-start">
-            <div className="navbar-item">
-              <Link to="/">Home</Link>
-            </div>
-
-            <Link to="/projects" className="navbar-item">
-              More
-            </Link>
-          </div> */}
-
           <div className="navbar-end">
             <div className="navbar-item">
               {auth.user ? (

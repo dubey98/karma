@@ -1,6 +1,10 @@
 import moment from "moment";
 
 export const defaultDueDate = "1970-01-01T00:00:00.000Z";
+export const tagCategory = {
+  datetime: "datetime",
+  projects: "projects",
+};
 
 export const selectPriority = [
   {

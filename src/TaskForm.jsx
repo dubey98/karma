@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTask } from "./services/useTask";
 import * as constants from "./constants";
 import DateAndTimeSelector from "./components/DateAndTimeSelector";
 import FormButtons from "./components/FormButtons";
 // import PriorityTags from "./components/PriorityTags";
 import DropDown from "./components/DropDown";
+import moment from "moment";
 
 const TaskForm = () => {
   const store = useTask();
@@ -15,6 +16,24 @@ const TaskForm = () => {
   const [dueDate, setDueDate] = useState(constants.defaultDueDate);
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState(constants.selectPriority[0].value);
+  const [tagList, setTagList] = useState([]);
+
+  useEffect(() => {
+    tagList.forEach((tag) => {
+      if (tag.category === constants.tagCategory.datetime) {
+        if (tag.id === 1) {
+          setDueDate(() => new Date(new Date().setHours(9, 0, 0, 0)));
+        } else if (tag.id === 2) {
+          setDueDate(
+            () =>
+              new Date(moment(new Date().setHours(9, 0, 0, 0)).add(1, "days"))
+          );
+        }
+      } else if (tag.category === constants.tagCategory.projects) {
+      }
+    });
+    return () => {};
+  }, [tagList]);
 
   async function addTask() {
     if (validateInput()) {
@@ -58,8 +77,77 @@ const TaskForm = () => {
   }
 
   function handleTaskPriority(priority) {
-    console.log(priority);
     setPriority(priority);
+  }
+
+  function handleTitleChange(title) {
+    setTitle(title);
+    processText(title);
+  }
+
+  function processText(input) {
+    const tempTagList = [...tagList];
+
+    const r_today = /(\btod\b|\btoday\b)/i;
+    const r_tomorrow = /(\btom\b|\btomorrow\b)/i;
+    const category = constants.tagCategory.datetime;
+
+    if (
+      r_today.test(input) &&
+      !tempTagList.find((tag) => tag.id === 1) &&
+      !tempTagList.find(
+        (tag) => tag.category === constants.tagCategory.datetime
+      )
+    ) {
+      tempTagList.push({
+        id: 1,
+        text: "today",
+        category: category,
+      });
+      setTagList(tempTagList);
+    } else if (
+      !r_today.test(input) &&
+      tempTagList.find((tag) => tag.id === 1)
+    ) {
+      handleTagDelete(1);
+    }
+
+    if (
+      r_tomorrow.test(input) &&
+      !tempTagList.find((tag) => tag.id === 2) &&
+      !tempTagList.find(
+        (tag) => tag.category === constants.tagCategory.datetime
+      )
+    ) {
+      tempTagList.push({
+        id: 2,
+        text: "tomorrow",
+        category: category,
+      });
+      setTagList(tempTagList);
+    } else if (
+      !r_tomorrow.test(input) &&
+      tempTagList.find((tag) => tag.id === 2)
+    ) {
+      handleTagDelete(2);
+    }
+
+    if (
+      !tempTagList.find(
+        (tag) => tag.category === constants.tagCategory.projects
+      )
+    ) {
+    }
+  }
+
+  function handleTagDelete(tagId) {
+    const tempTagList = [...tagList];
+    const index = tempTagList.findIndex((tag) => tag.id === tagId);
+    if (index !== -1) {
+      tempTagList.splice(index, 1);
+      setTagList(tempTagList);
+      setDueDate(new Date(constants.defaultDueDate));
+    }
   }
 
   return activated ? (
@@ -72,7 +160,7 @@ const TaskForm = () => {
               type="text"
               placeholder="Bring milk and sweets"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => handleTitleChange(e.target.value)}
               onFocus={() => setTitleError("")}
             />
             <span className="icon is-small is-left">
@@ -95,14 +183,28 @@ const TaskForm = () => {
           ></textarea>
         </div>
 
-        <div className="field columns is-justify-content-space-between">
+        <div className="field columns">
           <div className="column is-narrow pb-0">
             <DropDown
               initialValue={priority}
               handleValueChange={handleTaskPriority}
               dropDownOptions={constants.selectPriority}
             />
-            {/* <PriorityTags priority={priority} setPriority={setPriority} /> */}
+          </div>
+          <div className="column pb-0">
+            <div className="tags">
+              {tagList.map((tag) => {
+                return (
+                  <span className="tag is-info is-light" key={tag.id}>
+                    {tag.text}
+                    <button
+                      className="delete is-small"
+                      onClick={() => handleTagDelete(tag.id)}
+                    ></button>
+                  </span>
+                );
+              })}
+            </div>
           </div>
           <div className="column is-narrow">
             <DateAndTimeSelector dateTime={dueDate} setDateTime={setDateTime} />
