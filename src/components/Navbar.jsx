@@ -6,6 +6,7 @@ const Navbar = () => {
   const auth = useAuth();
   const burgerMenu = useRef(null);
   const navbarMain = useRef(null);
+  const profileDropdown = useRef(null);
 
   function toggleBurgerMenu() {
     if (burgerMenu !== null && navbarMain !== null) {
@@ -47,15 +48,42 @@ const Navbar = () => {
             <div className="navbar-item">
               {auth.user ? (
                 <div className="buttons">
-                  <button
-                    className="button has-background-success-light"
-                    onClick={async () => {
-                      await auth.signOut();
-                      toggleBurgerMenu();
-                    }}
+                  <div
+                    className="navbar-item has-dropdown is-hoverable"
+                    ref={profileDropdown}
                   >
-                    Log Out
-                  </button>
+                    <Link to="/" className="navbar-link is-arrowless">
+                      {auth.user.photoURL ? (
+                        <figure class="image is-32x32">
+                          <img class="is-rounded" src={auth.user.photoURL} />
+                        </figure>
+                      ) : (
+                        <span className="icon">
+                          <i className="far fa-user"></i>
+                        </span>
+                      )}
+                    </Link>
+
+                    <div className="navbar-dropdown is-right">
+                      <Link to="/" className="navbar-item">
+                        Profile
+                      </Link>
+                      <Link to="/" className="navbar-item">
+                        Settings
+                      </Link>
+                      <hr className="navbar-divider" />
+                      <Link
+                        to="/"
+                        className="navbar-item is-selectable"
+                        onClick={async () => {
+                          await auth.signOut();
+                          toggleBurgerMenu();
+                        }}
+                      >
+                        Log Out
+                      </Link>
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <div className="buttons">

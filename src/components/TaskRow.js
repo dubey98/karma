@@ -36,13 +36,13 @@ function TaskRow({ task }) {
   return (
     <tr>
       <td className="columns p-0 m-0 is-mobile">
-        <div
-          className="column is-narrow is-flex is-justify-content-center"
+        <button
+          className="column is-narrow is-flex is-justify-content-center remove-button-preset"
           style={style}
         >
           <span
             className="icon is-align-self-center"
-            onClick={() => store.changeTaskStatus(task.id, !task.completed)}
+            onClick={() => store.changeTaskStatus(task, !task.completed)}
           >
             {task.completed ? (
               <i className="fas fa-check-circle"></i>
@@ -50,7 +50,7 @@ function TaskRow({ task }) {
               <i className="far fa-circle"></i>
             )}
           </span>
-        </div>
+        </button>
         <div
           className="column is-flex is-clickable"
           onClick={() => handleTaskClick()}
@@ -75,11 +75,19 @@ function TaskRow({ task }) {
         </div>
 
         <div
-          className="column is-narrow is-flex"
-          onClick={async () => await store.deleteTask(task.id)}
+          className="column is-narrow is-flex is-clickable  "
+          onClick={async () => await store.deleteTask(task)}
           style={style}
         >
-          <button className="delete is-align-self-center"></button>
+          {globals.showArchived ? (
+            <span className="icon is-align-self-center">
+              <i className="fas fa-archive"></i>
+            </span>
+          ) : (
+            <span className="icon is-align-self-center">
+              <i className="far fa-trash-alt"></i>
+            </span>
+          )}
         </div>
       </td>
     </tr>

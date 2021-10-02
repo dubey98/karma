@@ -15,6 +15,8 @@ export function GlobalContextProvider({ children }) {
 
 function useGlobalProvider() {
   const [taskDetailActivated, setTaskDetailActivated] = useState(false);
+  const [showArchived, setShowArchived] = useState(false);
+  const [showCompleted, setShowCompleted] = useState(false);
   const [detailTask, setDetailTask] = useState(null);
 
   function activateTaskDetailModal(task) {
@@ -30,7 +32,11 @@ function useGlobalProvider() {
   return {
     taskDetailActivated,
     detailTask,
+    showArchived,
+    showCompleted,
     activateTaskDetailModal,
     deactivateTaskDetailModal,
+    setShowCompleted,
+    setShowArchived,
   };
 }

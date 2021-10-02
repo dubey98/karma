@@ -16,6 +16,7 @@ import {
 import { useAuth } from "./useAuth";
 import * as gC from "../Constants/constants";
 import * as gF from "./../Constants/gFunctions";
+import { useGlobals } from "./useGlobals";
 
 const db = getFirestore();
 
@@ -36,6 +37,7 @@ function useTaskProvider() {
   const reloadDelay = 1;
 
   const auth = useAuth();
+  const globals = useGlobals();
   const [projects, setProjects] = useState([]);
   const [currentProject, setCurrentProject] = useState(null);
   const [tasks, setTasks] = useState([]);
@@ -102,6 +104,13 @@ function useTaskProvider() {
     async function _getTasks() {
       if (auth.user && currentProject) {
         console.log(fs, "tasks");
+        console.log(
+          auth.user,
+          currentProject,
+          reloadTaskFlag,
+          globals.showCompleted,
+          globals.showArchived
+        );
         if (
           gC.defaultProjectIds.find(
             (projectId) => currentProject.id === projectId
@@ -112,8 +121,8 @@ function useTaskProvider() {
         } else {
           const q = query(
             collection(db, "projects", currentProject.id, "tasks"),
-            where("archived", "==", false),
-            where("completed", "==", false)
+            where("archived", "==", globals.showArchived),
+            where("completed", "==", globals.showCompleted)
           );
           const snap = await getDocs(q);
 
@@ -133,7 +142,13 @@ function useTaskProvider() {
     _getTasks();
 
     return () => {};
-  }, [auth.user, currentProject, reloadTaskFlag]);
+  }, [
+    auth.user,
+    currentProject,
+    reloadTaskFlag,
+    globals.showCompleted,
+    globals.showArchived,
+  ]);
 
   useEffect(() => {
     async function _getTasks() {
@@ -176,7 +191,6 @@ function useTaskProvider() {
 
   async function addTask(_newTask) {
     if (auth.user && _newTask) {
-      console.log(_newTask);
       _newTask.dueDate = new Date(_newTask.dueDate) || null;
       _newTask.uid = auth.user.uid;
       _newTask.archived = false;
@@ -184,8 +198,10 @@ function useTaskProvider() {
       gC.defaultProjectIds.forEach((pId) => {
         if (currentProject.id.toString().trim() === pId.toString().trim()) {
           project = defaultProjectId;
+          _newTask.projectId = defaultProjectId;
         }
       });
+      _newTask.projectId = _newTask.projectId || currentProject.id;
 
       const taskRef = collection(db, "projects", project, "tasks");
 
@@ -210,9 +226,15 @@ function useTaskProvider() {
     }
   }
 
-  async function deleteTask(taskId) {
-    if (auth.user && taskId) {
-      const taskRef = doc(db, "projects", currentProject, "tasks", taskId);
+  async function deleteTask(task) {
+    if (auth.user && task) {
+      const taskRef = doc(
+        db,
+        "projects",
+        task.projectId || currentProject.id,
+        "tasks",
+        task.id
+      );
       await setDoc(taskRef, { archived: true }, { merge: true });
       setReloadTaskFlag(!reloadTaskFlag);
     } else {
@@ -281,19 +303,21 @@ function useTaskProvider() {
     }
   }
 
-  async function changeTaskStatus(taskId, status) {
-    if (auth.user && taskId) {
-      const q = query(doc(db, "projects", currentProject.id, "tasks", taskId));
+  async function changeTaskStatus(task, status) {
+    if (auth.user && task) {
+      console.log(task);
+      const q = query(
+        doc(
+          db,
+          "projects",
+          task.projectId || currentProject.id,
+          "tasks",
+          task.id
+        )
+      );
       await updateDoc(q, {
         completed: status,
       });
-      const _tasks = tasks.map((task) => {
-        if (task.id === taskId) {
-          task.completed = status;
-        }
-        return task;
-      });
-      setTasks(_tasks);
       setReloadTaskFlag(!reloadTaskFlag);
     }
   }

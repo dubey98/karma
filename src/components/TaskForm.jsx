@@ -184,7 +184,7 @@ const TaskForm = () => {
           ></textarea>
         </div>
 
-        <div className="field columns">
+        <div className="field columns is-mobile">
           <div className="column is-narrow pb-0">
             <DropDown
               initialValue={priority}
@@ -223,15 +223,13 @@ const TaskForm = () => {
       </div>
     </div>
   ) : (
-    <div>
-      <div className="control pl-4">
-        <button
-          className="button is-outlined is-success is-light is-fullwidth"
-          onClick={() => setActivated(true)}
-        >
-          Add Task
-        </button>
-      </div>
+    <div className="control pl-4">
+      <button
+        className="button is-outlined is-success is-light is-fullwidth"
+        onClick={() => setActivated(true)}
+      >
+        Add Task
+      </button>
     </div>
   );
 };
