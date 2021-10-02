@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import moment from "moment";
-import * as constants from "./../constants";
+import * as constants from "../Constants/constants";
 
 const DateAndTimeSelector = ({ dateTime, setDateTime }) => {
   const [activated, setActivated] = useState(false);

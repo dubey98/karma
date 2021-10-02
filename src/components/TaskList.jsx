@@ -1,8 +1,8 @@
 import moment from "moment";
 import React, { useState, useEffect } from "react";
-import { selectPriority } from "./constants";
-import { useTask } from "./services/useTask";
-import TaskRow from "./components/TaskRow";
+import { selectPriority } from "../Constants/constants";
+import { useTask } from "../services/useTask";
+import TaskRow from "./TaskRow";
 
 function TaskList() {
   const store = useTask();

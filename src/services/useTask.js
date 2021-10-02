@@ -14,7 +14,8 @@ import {
   collectionGroup,
 } from "firebase/firestore";
 import { useAuth } from "./useAuth";
-import * as constants from "./../constants";
+import * as gC from "../Constants/constants";
+import * as gF from "./../Constants/gFunctions";
 
 const db = getFirestore();
 
@@ -91,9 +92,7 @@ function useTaskProvider() {
       if (auth.user && currentProject) {
         console.log(fs, "tasks");
         if (
-          constants.defaultProjectIds.find(
-            (projectId) => currentProject === projectId
-          )
+          gC.defaultProjectIds.find((projectId) => currentProject === projectId)
         ) {
           setTasks([]);
           setReloadDefaultTasks((reloadDefaultTasks) => !reloadDefaultTasks);
@@ -125,7 +124,7 @@ function useTaskProvider() {
 
   useEffect(() => {
     async function _getTasks() {
-      if (constants.defaultProjectIds.find((pId) => pId === currentProject)) {
+      if (gC.defaultProjectIds.find((pId) => pId === currentProject)) {
         const q =
           currentProject.toString() === "0"
             ? query(
@@ -133,19 +132,15 @@ function useTaskProvider() {
                 where("uid", "==", auth.user.uid),
                 where("archived", "==", false),
                 where("completed", "==", false),
-                where(
-                  "dueDate",
-                  ">",
-                  new Date(constants.getPrevDayTimeStamp())
-                ),
-                where("dueDate", "<", new Date(constants.getNextDayTimeStamp()))
+                where("dueDate", ">", new Date(gF.getPrevDayTimeStamp())),
+                where("dueDate", "<", new Date(gF.getNextDayTimeStamp()))
               )
             : query(
                 collectionGroup(db, "tasks"),
                 where("uid", "==", auth.user.uid),
                 where("archived", "==", false),
                 where("completed", "==", false),
-                where("dueDate", ">", new Date(constants.getPrevDayTimeStamp()))
+                where("dueDate", ">", new Date(gF.getPrevDayTimeStamp()))
               );
 
         const _tasks = [];
@@ -171,7 +166,7 @@ function useTaskProvider() {
       _newTask.uid = auth.user.uid;
       _newTask.archived = false;
       let project = currentProject;
-      constants.defaultProjectIds.forEach((pId) => {
+      gC.defaultProjectIds.forEach((pId) => {
         if (currentProject.toString().trim() === pId.toString().trim()) {
           project = defaultProjectId;
         }

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useTask } from "./services/useTask";
-import * as constants from "./constants";
-import DateAndTimeSelector from "./components/DateAndTimeSelector";
-import FormButtons from "./components/FormButtons";
+import { useTask } from "../services/useTask";
+import * as constants from "../Constants/constants";
+import DateAndTimeSelector from "./DateAndTimeSelector";
+import FormButtons from "./FormButtons";
 // import PriorityTags from "./components/PriorityTags";
-import DropDown from "./components/DropDown";
+import DropDown from "./DropDown";
 import moment from "moment";
 
 const TaskForm = () => {
@@ -61,6 +61,7 @@ const TaskForm = () => {
     setTitleError("");
     setPriority(constants.selectPriority[0].value);
     setDescription("");
+    setTagList([]);
   }
 
   function validateInput() {
@@ -85,7 +86,7 @@ const TaskForm = () => {
     processText(title);
   }
 
-  function processText(input) {
+  function processText(input, tagList) {
     const tempTagList = [...tagList];
 
     const r_today = /(\btod\b|\btoday\b)/i;

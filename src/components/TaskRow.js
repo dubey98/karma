@@ -2,7 +2,7 @@ import React from "react";
 import { useTask } from "../services/useTask";
 import { useGlobals } from "../services/useGlobals";
 import moment from "moment";
-import { defaultDueDate } from "../constants";
+import { defaultDueDate } from "../Constants/constants";
 
 function TaskRow({ task }) {
   const store = useTask();

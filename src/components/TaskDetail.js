@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useGlobals } from "../services/useGlobals";
 import DropDown from "./DropDown";
 import DateAndTimeSelector from "./DateAndTimeSelector";
-import * as constants from "./../constants";
+import * as constants from "../Constants/constants";
 import FormButtons from "./FormButtons";
 import { useTask } from "../services/useTask";
 import moment from "moment";

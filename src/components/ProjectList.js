@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import ProjectForm from "./components/ProjectForm";
-import { useTask } from "./services/useTask";
-import DefaultProjectList from "./components/DefaultProjectList";
+import ProjectForm from "./ProjectForm";
+import { useTask } from "../services/useTask";
+import DefaultProjectList from "./DefaultProjectList";
 
 function ProjectList() {
   const store = useTask();

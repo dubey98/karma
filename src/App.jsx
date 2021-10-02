@@ -1,15 +1,16 @@
 import React from "react";
 import "./services/firebase";
 import Navbar from "./components/Navbar";
-import TaskList from "./TaskList";
-import TaskForm from "./TaskForm";
+import TaskList from "./components/TaskList";
+import TaskForm from "./components/TaskForm";
 import { BrowserRouter as Router } from "react-router-dom";
 import { TaskContextProvider } from "./services/useTask";
-import ProjectList from "./ProjectList";
+import ProjectList from "./components/ProjectList";
 import Seo from "./services/Seo";
 import TaskDetail from "./components/TaskDetail";
 import { useAuth } from "./services/useAuth";
 import HomePage from "./components/HomePage";
+import "./App.scss";
 
 const App = () => {
   const auth = useAuth();

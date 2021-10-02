@@ -10,7 +10,7 @@ const HomePage = () => {
         <HomePageFront />
       </div>
 
-      <div className="hero-foot pb-2">
+      <div className="hero-foot pb-2 px-2">
         <div className="container">
           <nav className="level content">
             <div className="level-left">
@@ -42,18 +42,18 @@ function HomePageFront() {
         </span>
       </p>
       <div className="buttons" style={{ justifyContent: "center" }}>
-        <div
+        <button
           className="button is-outlined is-success is-light"
           onClick={() => auth.signIn()}
         >
           Sign Up
-        </div>
-        <div
+        </button>
+        <button
           className="button is-outlined is-link is-light"
           onClick={() => auth.signIn()}
         >
           Log In
-        </div>
+        </button>
       </div>
     </div>
   );
