@@ -1,5 +1,5 @@
 import React from "react";
-import "./services/firebase";
+import "./config/firebase.config";
 import Navbar from "./components/Navbar";
 import TaskList from "./components/TaskList";
 import TaskForm from "./components/TaskForm";

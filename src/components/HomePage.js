@@ -44,13 +44,13 @@ function HomePageFront() {
       <div className="buttons" style={{ justifyContent: "center" }}>
         <button
           className="button is-outlined is-success is-light"
-          onClick={() => auth.signIn()}
+          onClick={async () => await auth.signIn()}
         >
           Sign Up
         </button>
         <button
           className="button is-outlined is-link is-light"
-          onClick={() => auth.signIn()}
+          onClick={async () => await auth.signIn()}
         >
           Log In
         </button>

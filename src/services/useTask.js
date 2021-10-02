@@ -33,6 +33,8 @@ export function TaskContextProvider({ children }) {
 const fs = ":::::::::::::::::::Firestore fetch:::::::::::::::::::::";
 
 function useTaskProvider() {
+  const reloadDelay = 1;
+
   const auth = useAuth();
   const [projects, setProjects] = useState([]);
   const [currentProject, setCurrentProject] = useState(null);
@@ -44,6 +46,7 @@ function useTaskProvider() {
   const [defaultProjectId, setDefaultProjectId] = useState(null);
 
   useEffect(() => {
+    let timer = null;
     async function getProjects() {
       if (auth.user) {
         console.log(fs, "projects");
@@ -51,31 +54,39 @@ function useTaskProvider() {
         const defaultProjectQuery = query(doc(db, "users", auth.user.uid));
 
         let snap = await getDoc(defaultProjectQuery);
-        const defaultProjectId = snap.data().defaultProjectId;
-        setDefaultProjectId(defaultProjectId);
-        const q = query(
-          collection(db, "projects"),
-          where("uid", "==", auth.user.uid),
-          where("archived", "==", false)
-        );
-        snap = await getDocs(q);
+        if (snap.exists()) {
+          const _defaultProjectId = snap.data().defaultProjectId;
+          setDefaultProjectId(_defaultProjectId);
+          const q = query(
+            collection(db, "projects"),
+            where("uid", "==", auth.user.uid),
+            where("archived", "==", false)
+          );
+          snap = await getDocs(q);
 
-        // set projects and current project
-        const _projects = [];
-        const _defaultProjects = [];
-        snap.forEach((value) => {
-          if (value.id === defaultProjectId.trim()) {
-            // console.log("adding project to default ones", value.id);
-            _defaultProjects.push({ ...value.data(), id: value.id });
-          } else {
-            // console.log("adding normal projects", value.id);
-            _projects.push({ ...value.data(), id: value.id });
-          }
-        });
+          // set projects and current project
+          const _projects = [];
+          const _defaultProjects = [];
+          snap.forEach((value) => {
+            if (value.id === _defaultProjectId.trim()) {
+              // console.log("adding project to default ones", value.id);
+              _defaultProjects.push({ ...value.data(), id: value.id });
+            } else {
+              // console.log("adding normal projects", value.id);
+              _projects.push({ ...value.data(), id: value.id });
+            }
+          });
 
-        setProjects(_projects);
-        setDefaultProjects(_defaultProjects);
-        setCurrentProject(defaultProjectId.trim());
+          setProjects(_projects);
+          setDefaultProjects(_defaultProjects);
+          setCurrentProject(_defaultProjectId.trim());
+        } else {
+          console.log("setting the timer to reload");
+          timer = setTimeout(
+            () => setReloadProjects(!reloadProjects),
+            reloadDelay * 1000
+          );
+        }
       } else {
         setProjects([]);
         setDefaultProjects([]);
@@ -84,7 +95,10 @@ function useTaskProvider() {
     }
 
     getProjects();
-    return () => {};
+    return () => {
+      console.log("clearing the timeer");
+      clearInterval(timer);
+    };
   }, [auth.user, reloadProjects]);
 
   useEffect(() => {

@@ -38,3 +38,9 @@ export const selectPriority = [
 ];
 
 export const defaultProjectIds = ["0", "1"];
+
+export const defaultProjectDetails = {
+  title: "INBOX",
+  description: "A default project for all your tasks",
+  archived: false,
+};

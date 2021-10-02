@@ -1,21 +1,61 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import {
+  getFirestore,
+  collection,
+  getDoc,
+  query,
+  doc,
+  setDoc,
+  serverTimestamp,
+  addDoc,
+  updateDoc,
+} from "firebase/firestore";
+import * as gC from "./../Constants/constants";
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyB7UTq-y1DjPb0UuNJ83ZLnE81Ht405OQI",
-  authDomain: "todo-karma.firebaseapp.com",
-  projectId: "todo-karma",
-  storageBucket: "todo-karma.appspot.com",
-  messagingSenderId: "757248016606",
-  appId: "1:757248016606:web:60058f2edc4c08c1b5824f",
-  measurementId: "G-07LN1JMQ97",
-};
+const db = getFirestore();
 
-// Initialize Firebase
-export const app = initializeApp(firebaseConfig);
-export const analytics = getAnalytics(app);
+async function checkIfUserExists(userId) {
+  let result = false;
+  if (userId !== "") {
+    const q = query(doc(db, "users", userId));
+    const snapShot = await getDoc(q);
+    if (snapShot.exists()) {
+      result = true;
+    }
+  }
+  return result;
+}
+
+async function addUser(user) {
+  if (user !== null) {
+    const newUser = {
+      displayName: user.displayName,
+      email: user.email,
+      photoURL: user.photoURL,
+      emailVerified: user.emailVerified,
+    };
+    const uid = user.uid;
+
+    const result = await setDoc(doc(db, "users", uid), {
+      ...newUser,
+    });
+    console.log(result);
+  }
+}
+
+async function createDefaultProject(userId) {
+  if (userId !== null) {
+    const _project = {
+      ...gC.defaultProjectDetails,
+      timestamp: serverTimestamp(),
+      uid: userId,
+    };
+    const result = await addDoc(collection(db, "projects"), {
+      ..._project,
+    });
+    await updateDoc(doc(db, "users", userId), {
+      defaultProjectId: result.id,
+    });
+  }
+}
+
+export { checkIfUserExists, addUser, createDefaultProject };

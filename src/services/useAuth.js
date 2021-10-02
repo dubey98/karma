@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
+import * as firebase from "./firebase";
 import {
   getAuth,
   onAuthStateChanged,
@@ -30,14 +31,16 @@ function useAuthProvider() {
     }
   });
 
-  function signIn() {
+  async function signIn() {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider)
-      .then((result) => {
+      .then(async (result) => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential.accessToken;
         const _user = result.user;
         setUser(_user);
+        await _setUpFIrstTimeUser(_user.uid);
+
         console.log({ credential, token, _user });
       })
       .catch((error) => {
@@ -61,6 +64,15 @@ function useAuthProvider() {
   async function signOut() {
     await auth.signOut();
     setUser(null);
+  }
+
+  async function _setUpFIrstTimeUser(userId) {
+    const userExists = await firebase.checkIfUserExists(userId);
+    if (!userExists) {
+      const user = auth.currentUser;
+      await firebase.addUser(user);
+      await firebase.createDefaultProject(user.uid);
+    }
   }
 
   return {

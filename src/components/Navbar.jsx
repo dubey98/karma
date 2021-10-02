@@ -1,13 +1,17 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useAuth } from "./../services/useAuth";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const auth = useAuth();
+  const burgerMenu = useRef(null);
+  const navbarMain = useRef(null);
 
-  function handleNavbarClick(e) {
-    document.getElementById("navbarMain").classList.toggle("is-active");
-    e.target.classList.toggle("is-active");
+  function toggleBurgerMenu() {
+    if (burgerMenu !== null && navbarMain !== null) {
+      burgerMenu.current.classList.toggle("is-active");
+      navbarMain.current.classList.toggle("is-active");
+    }
   }
 
   return (
@@ -28,8 +32,9 @@ const Navbar = () => {
             className="navbar-burger has-text-weight-bold"
             aria-label="menu"
             aria-expanded="false"
-            onClick={(e) => handleNavbarClick(e)}
+            onClick={() => toggleBurgerMenu()}
             data-target="navbarBasicExample"
+            ref={burgerMenu}
           >
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
@@ -37,14 +42,17 @@ const Navbar = () => {
           </button>
         </div>
 
-        <div id="navbarMain" className="navbar-menu">
+        <div id="navbarMain" className="navbar-menu" ref={navbarMain}>
           <div className="navbar-end">
             <div className="navbar-item">
               {auth.user ? (
                 <div className="buttons">
                   <button
                     className="button has-background-success-light"
-                    onClick={() => auth.signOut()}
+                    onClick={async () => {
+                      await auth.signOut();
+                      toggleBurgerMenu();
+                    }}
                   >
                     Log Out
                   </button>
@@ -53,13 +61,19 @@ const Navbar = () => {
                 <div className="buttons">
                   <button
                     className="button has-background-success-light"
-                    onClick={() => auth.signIn()}
+                    onClick={async () => {
+                      await auth.signIn();
+                      toggleBurgerMenu();
+                    }}
                   >
                     <strong>Sign up</strong>
                   </button>
                   <button
                     className="button has-background-success-light"
-                    onClick={() => auth.signIn()}
+                    onClick={async () => {
+                      await auth.signIn();
+                      toggleBurgerMenu();
+                    }}
                   >
                     Log in
                   </button>
