@@ -44,3 +44,14 @@ export const defaultProjectDetails = {
   description: "A default project for all your tasks",
   archived: false,
 };
+
+export const defaultProjects = [
+  {
+    title: "Today",
+    id: "0",
+  },
+  {
+    title: "Upcoming",
+    id: "1",
+  },
+];

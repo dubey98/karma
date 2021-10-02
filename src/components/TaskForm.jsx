@@ -86,7 +86,7 @@ const TaskForm = () => {
     processText(title);
   }
 
-  function processText(input, tagList) {
+  function processText(input) {
     const tempTagList = [...tagList];
 
     const r_today = /(\btod\b|\btoday\b)/i;

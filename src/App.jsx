@@ -11,6 +11,7 @@ import TaskDetail from "./components/TaskDetail";
 import { useAuth } from "./services/useAuth";
 import HomePage from "./components/HomePage";
 import "./App.scss";
+import Settings from "./components/Settings";
 
 const App = () => {
   const auth = useAuth();
@@ -26,14 +27,12 @@ const App = () => {
         <section className="section">
           <TaskContextProvider>
             <TaskDetail />
-            <div
-              className="columns container"
-              style={{ marginLeft: "auto", marginRight: "auto" }}
-            >
+            <div className="columns container mx-auto">
               <div className="column is-one-fifth">
                 <ProjectList />
               </div>
               <div className="column">
+                <Settings />
                 <div className="block">
                   <TaskList />
                 </div>

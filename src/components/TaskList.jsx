@@ -11,7 +11,7 @@ function TaskList() {
   useEffect(() => {
     if (store.currentProject) {
       const _taskTable =
-        store.currentProject.toString() === "1"
+        store.currentProject.id.toString() === "1"
           ? mapTaskByDueDate(store.tasks)
           : mapTasksbyPriority(store.tasks);
       setTaskTable(_taskTable);

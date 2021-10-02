@@ -7,8 +7,43 @@
 $color-warning-light: hsl(48, 100%, 96%);
 $color-danger-light: hsl(347, 90%, 96%);
 $background-grey-light: hsl(0, 0%, 71%);
+$color-primary: hsl(171, 100%, 41%);
+$color-grey: hsl(0, 0%, 48%);
+
+$button-focus-border-color: #fff;
+$button-focus-box-shadow-size: 0;
+$button-focus-box-shadow-color: #fff;
 
 .border-gray-light {
   border: 2px solid $background-grey-light;
   border-radius: 10px;
+}
+
+.toggler {
+  height: 1.5rem;
+  width: 3rem;
+  border-radius: 1rem;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  justify-content: flex-start;
+}
+
+.toggler-circle {
+  padding: 0;
+  margin: 0;
+  height: 1.6rem;
+  width: 1.5rem;
+  border-radius: 50%;
+  box-sizing: border-box;
+  transition: margin 250ms ease-in-out;
+  background-color: $color-primary;
+}
+
+.toggler-on {
+  margin-left: 1.4rem;
+}
+
+.border-bottom {
+  border-bottom: 1px solid $color-grey;
 }

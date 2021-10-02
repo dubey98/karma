@@ -7,8 +7,8 @@ function ProjectList() {
   const store = useTask();
   const [activated, setActivated] = useState(false);
 
-  async function handleChangeProject(projectId) {
-    await store.changeCurrentProject(projectId);
+  async function handleChangeProject(project) {
+    await store.changeCurrentProject(project);
   }
 
   return (
@@ -26,11 +26,11 @@ function ProjectList() {
               <tr
                 key={project.id}
                 className={
-                  project.id === store.currentProject
+                  project.id === store.currentProject.id
                     ? "is-selected is-clickable"
                     : "is-clickable"
                 }
-                onClick={async () => await handleChangeProject(project.id)}
+                onClick={async () => await handleChangeProject(project)}
               >
                 <td>{project.title}</td>
               </tr>

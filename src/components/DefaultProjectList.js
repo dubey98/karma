@@ -1,41 +1,41 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useTask } from "../services/useTask";
+import { defaultProjects } from "../Constants/constants";
 
 const DefaultProjectList = () => {
   const store = useTask();
-  const todaysProject = {
-    title: "Today",
-    id: "0",
-  };
-  const upcomingProject = {
-    title: "Upcoming",
-    id: "1",
-  };
+  const [projects, setProjects] = useState([]);
 
-  const projects = [...store.defaultProjects, todaysProject, upcomingProject];
+  useEffect(() => {
+    if (store.defaultProjects !== null) {
+      setProjects([...store.defaultProjects, ...defaultProjects]);
+    }
+    return () => {};
+  }, [store.defaultProjects, store.currentProject]);
 
-  function handleProjectClick(projectId) {
-    store.changeCurrentProject(projectId);
+  function handleProjectClick(project) {
+    store.changeCurrentProject(project);
   }
 
   return (
     <table className="table is-hoverable is-fullwidth">
       <tbody>
-        {projects.map((project) => {
-          return (
-            <tr
-              key={project.id}
-              className={
-                project.id === store.currentProject
-                  ? "is-selected is-clickable"
-                  : "is-clickable"
-              }
-              onClick={async () => handleProjectClick(project.id)}
-            >
-              <td>{project.title}</td>
-            </tr>
-          );
-        })}
+        {store.currentProject &&
+          projects.map((project) => {
+            return (
+              <tr
+                key={project.id}
+                className={
+                  project.id === store.currentProject.id
+                    ? "is-selected is-clickable"
+                    : "is-clickable"
+                }
+                onClick={async () => handleProjectClick(project)}
+              >
+                <td>{project.title}</td>
+              </tr>
+            );
+          })}
       </tbody>
     </table>
   );

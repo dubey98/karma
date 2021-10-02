@@ -72,16 +72,14 @@ function useTaskProvider() {
               // console.log("adding project to default ones", value.id);
               _defaultProjects.push({ ...value.data(), id: value.id });
             } else {
-              // console.log("adding normal projects", value.id);
+              //console.log("adding normal projects", value.id);
               _projects.push({ ...value.data(), id: value.id });
             }
           });
-
+          setCurrentProject(gC.defaultProjects[0]);
           setProjects(_projects);
           setDefaultProjects(_defaultProjects);
-          setCurrentProject(_defaultProjectId.trim());
         } else {
-          console.log("setting the timer to reload");
           timer = setTimeout(
             () => setReloadProjects(!reloadProjects),
             reloadDelay * 1000
@@ -96,7 +94,6 @@ function useTaskProvider() {
 
     getProjects();
     return () => {
-      console.log("clearing the timeer");
       clearInterval(timer);
     };
   }, [auth.user, reloadProjects]);
@@ -106,13 +103,15 @@ function useTaskProvider() {
       if (auth.user && currentProject) {
         console.log(fs, "tasks");
         if (
-          gC.defaultProjectIds.find((projectId) => currentProject === projectId)
+          gC.defaultProjectIds.find(
+            (projectId) => currentProject.id === projectId
+          )
         ) {
           setTasks([]);
           setReloadDefaultTasks((reloadDefaultTasks) => !reloadDefaultTasks);
         } else {
           const q = query(
-            collection(db, "projects", currentProject, "tasks"),
+            collection(db, "projects", currentProject.id, "tasks"),
             where("archived", "==", false),
             where("completed", "==", false)
           );
@@ -131,16 +130,16 @@ function useTaskProvider() {
         setTasks([]);
       }
     }
-
     _getTasks();
+
     return () => {};
   }, [auth.user, currentProject, reloadTaskFlag]);
 
   useEffect(() => {
     async function _getTasks() {
-      if (gC.defaultProjectIds.find((pId) => pId === currentProject)) {
+      if (gC.defaultProjectIds.find((pId) => pId === currentProject.id)) {
         const q =
-          currentProject.toString() === "0"
+          currentProject.id.toString() === "0"
             ? query(
                 collectionGroup(db, "tasks"),
                 where("uid", "==", auth.user.uid),
@@ -168,7 +167,9 @@ function useTaskProvider() {
       }
     }
 
-    _getTasks();
+    if (currentProject) {
+      _getTasks();
+    }
 
     return () => {};
   }, [auth.user, reloadDefaultTasks, currentProject]);
@@ -179,9 +180,9 @@ function useTaskProvider() {
       _newTask.dueDate = new Date(_newTask.dueDate) || null;
       _newTask.uid = auth.user.uid;
       _newTask.archived = false;
-      let project = currentProject;
+      let project = currentProject.id;
       gC.defaultProjectIds.forEach((pId) => {
-        if (currentProject.toString().trim() === pId.toString().trim()) {
+        if (currentProject.id.toString().trim() === pId.toString().trim()) {
           project = defaultProjectId;
         }
       });
@@ -198,7 +199,7 @@ function useTaskProvider() {
 
   async function updateTask(taskId, updatedTask) {
     if (auth.user) {
-      const taskRef = doc(db, "projects", currentProject, "tasks", taskId);
+      const taskRef = doc(db, "projects", currentProject.id, "tasks", taskId);
       await updateDoc(taskRef, {
         ...updatedTask,
         timestamp: serverTimestamp(),
@@ -262,7 +263,7 @@ function useTaskProvider() {
 
   async function updateProject(updatedProject) {
     if (auth.user) {
-      const projectRef = doc(db, "projects", currentProject);
+      const projectRef = doc(db, "projects", currentProject.id);
       const updateRef = await updateDoc(projectRef, {
         ...updatedProject,
         timestamp: serverTimestamp(),
@@ -274,17 +275,15 @@ function useTaskProvider() {
     }
   }
 
-  async function changeCurrentProject(projectId) {
-    if (auth.user) {
-      if (projectId !== currentProject) {
-        setCurrentProject(projectId);
-      }
+  async function changeCurrentProject(project) {
+    if (auth.user && project) {
+      setCurrentProject(project);
     }
   }
 
   async function changeTaskStatus(taskId, status) {
     if (auth.user && taskId) {
-      const q = query(doc(db, "projects", currentProject, "tasks", taskId));
+      const q = query(doc(db, "projects", currentProject.id, "tasks", taskId));
       await updateDoc(q, {
         completed: status,
       });
