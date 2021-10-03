@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/karma/static/css/main.f9b1092c.chunk.css",
-    "main.js": "/karma/static/js/main.5c7ef85b.chunk.js",
-    "main.js.map": "/karma/static/js/main.5c7ef85b.chunk.js.map",
+    "main.js": "/karma/static/js/main.aa1f0003.chunk.js",
+    "main.js.map": "/karma/static/js/main.aa1f0003.chunk.js.map",
     "runtime-main.js": "/karma/static/js/runtime-main.b340579e.js",
     "runtime-main.js.map": "/karma/static/js/runtime-main.b340579e.js.map",
     "static/js/2.ba4d8e35.chunk.js": "/karma/static/js/2.ba4d8e35.chunk.js",
@@ -15,6 +15,6 @@
     "static/js/runtime-main.b340579e.js",
     "static/js/2.ba4d8e35.chunk.js",
     "static/css/main.f9b1092c.chunk.css",
-    "static/js/main.5c7ef85b.chunk.js"
+    "static/js/main.aa1f0003.chunk.js"
   ]
 }
