@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.css": "/karma/static/css/main.f9b1092c.chunk.css",
+    "main.js": "/karma/static/js/main.325cd982.chunk.js",
+    "main.js.map": "/karma/static/js/main.325cd982.chunk.js.map",
+    "runtime-main.js": "/karma/static/js/runtime-main.008da7be.js",
+    "runtime-main.js.map": "/karma/static/js/runtime-main.008da7be.js.map",
+    "static/js/2.53ca1e93.chunk.js": "/karma/static/js/2.53ca1e93.chunk.js",
+    "static/js/2.53ca1e93.chunk.js.map": "/karma/static/js/2.53ca1e93.chunk.js.map",
+    "index.html": "/karma/index.html",
+    "static/css/main.f9b1092c.chunk.css.map": "/karma/static/css/main.f9b1092c.chunk.css.map",
+    "static/js/2.53ca1e93.chunk.js.LICENSE.txt": "/karma/static/js/2.53ca1e93.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.008da7be.js",
+    "static/js/2.53ca1e93.chunk.js",
+    "static/css/main.f9b1092c.chunk.css",
+    "static/js/main.325cd982.chunk.js"
+  ]
+}
