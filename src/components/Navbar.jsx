@@ -54,8 +54,13 @@ const Navbar = () => {
                   >
                     <Link to="/" className="navbar-link is-arrowless">
                       {auth.user.photoURL ? (
-                        <figure class="image is-32x32">
-                          <img class="is-rounded" src={auth.user.photoURL} />
+                        <figure className="image is-32x32">
+                          <img
+                            className="is-rounded"
+                            src={auth.user.photoURL}
+                            alt="user profile"
+                          />
+                          {console.log(auth.user.photoURL)}
                         </figure>
                       ) : (
                         <span className="icon">

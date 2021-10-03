@@ -6,10 +6,6 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "webpack --progress --watch",
-    "error": "webpack --display-error-details",
-    "exlint": "eslint -init",
-    "build-dev": "webpack --progress --mode=development",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "deploy": "react-scripts build && gh-pages -d build -b deployed"

@@ -104,13 +104,6 @@ function useTaskProvider() {
     async function _getTasks() {
       if (auth.user && currentProject) {
         console.log(fs, "tasks");
-        console.log(
-          auth.user,
-          currentProject,
-          reloadTaskFlag,
-          globals.showCompleted,
-          globals.showArchived
-        );
         if (
           gC.defaultProjectIds.find(
             (projectId) => currentProject.id === projectId
