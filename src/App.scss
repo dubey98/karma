@@ -57,3 +57,32 @@ $button-focus-box-shadow-color: #fff;
   cursor: pointer;
   outline: inherit;
 }
+
+.burger-left {
+  @extend .navbar-burger;
+  margin-left: 0;
+}
+
+.burger-right {
+  margin-left: auto;
+  width: auto;
+}
+
+.navbar-dropdown-persist {
+  background-color: white;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  border-top: 2px solid #dbdbdb;
+  font-size: 0.875rem;
+  display: none;
+  min-width: 100%;
+  position: absolute;
+  top: 100%;
+  z-index: 20;
+  left: auto;
+  right: 0;
+}
+
+.navbar-dropdown-persist:hover {
+  display: block;
+}
