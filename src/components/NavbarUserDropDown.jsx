@@ -8,25 +8,25 @@ const NavbarUserDropDown = () => {
   const profileDropDownIcon = useRef(null);
 
   function toggleMenu() {
-    if (profileDropDownIcon !== null) {
+    if (profileDropDownIcon && profileDropDownIcon.current) {
       profileDropDownIcon.current.classList.toggle("is-active");
     }
   }
 
   function handleMouseEnter() {
-    if (profileDropdown !== null) {
+    if (profileDropdown && profileDropdown.current) {
       profileDropdown.current.classList.add("is-block");
     }
   }
 
   function handleMouseLeave() {
-    if (profileDropdown !== null) {
+    if (profileDropdown && profileDropdown.current) {
       profileDropdown.current.classList.remove("is-block");
     }
   }
 
   return (
-    <div className="navbar-item burger-right">
+    <div className="navbar-item burger-right" style={{ marginLeft: "auto" }}>
       {auth.user ? (
         <div className="buttons">
           <div

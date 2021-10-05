@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { useMediaQuery } from "react-responsive";
 
 const glbalContext = createContext();
 
@@ -14,10 +15,23 @@ export function GlobalContextProvider({ children }) {
 }
 
 function useGlobalProvider() {
+  const isMobile = useMediaQuery({
+    query: "(max-width: 1023px)",
+  });
+
   const [taskDetailActivated, setTaskDetailActivated] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
   const [showCompleted, setShowCompleted] = useState(false);
   const [detailTask, setDetailTask] = useState(null);
+  const [sideBarStatus, setSideBarStatus] = useState(true);
+
+  useEffect(() => {
+    if (isMobile) {
+      setSideBarStatus(true);
+    } else {
+      setSideBarStatus(false);
+    }
+  }, [isMobile]);
 
   function activateTaskDetailModal(task) {
     setTaskDetailActivated(true);
@@ -29,14 +43,21 @@ function useGlobalProvider() {
     setTaskDetailActivated(false);
   }
 
+  function handleSideBarStatus(status) {
+    setSideBarStatus(status);
+  }
+
   return {
+    isMobile,
     taskDetailActivated,
     detailTask,
     showArchived,
     showCompleted,
+    sideBarStatus,
     activateTaskDetailModal,
     deactivateTaskDetailModal,
     setShowCompleted,
     setShowArchived,
+    handleSideBarStatus,
   };
 }

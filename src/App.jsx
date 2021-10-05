@@ -12,9 +12,11 @@ import { useAuth } from "./services/useAuth";
 import HomePage from "./components/HomePage";
 import "./App.scss";
 import Settings from "./components/Settings";
+import { useGlobals } from "./services/useGlobals";
 
 const App = () => {
   const auth = useAuth();
+  const globals = useGlobals();
 
   return (
     <Router>
@@ -28,7 +30,13 @@ const App = () => {
           <TaskContextProvider>
             <TaskDetail />
             <div className="columns container mx-auto">
-              <div className="column is-one-fifth">
+              <div
+                className={
+                  globals.sideBarStatus
+                    ? "column is-one-fifth has-display-none transition-all-1"
+                    : "column is-one-fifth transition-all-1"
+                }
+              >
                 <ProjectList />
               </div>
               <div className="column">

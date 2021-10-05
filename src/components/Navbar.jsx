@@ -1,14 +1,17 @@
 import React, { useRef } from "react";
 import { Link } from "react-router-dom";
+import { useGlobals } from "../services/useGlobals";
 import NavbarUserDropDown from "./NavbarUserDropDown";
 
 const Navbar = () => {
   const burgerMenu = useRef(null);
+  const globals = useGlobals();
 
   function toggleBurgerMenu() {
-    if (burgerMenu !== null) {
+    if (burgerMenu !== null && burgerMenu.current) {
       burgerMenu.current.classList.toggle("is-active");
     }
+    globals.handleSideBarStatus(!globals.sideBarStatus);
   }
 
   return (
@@ -37,11 +40,15 @@ const Navbar = () => {
               <strong>KARMA</strong>
             </span>
           </Link>
-          <NavbarUserDropDown />
+
+          {globals.isMobile && <NavbarUserDropDown />}
         </div>
-        {/* <div id="navbarMain" className="navbar-menu">
-          <div className="navbar-end"></div>
-        </div> */}
+
+        <div id="navbarMain" className="navbar-menu">
+          <div className="navbar-end">
+            <NavbarUserDropDown />
+          </div>
+        </div>
       </div>
     </nav>
   );

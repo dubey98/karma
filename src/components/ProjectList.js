@@ -12,7 +12,7 @@ function ProjectList() {
   }
 
   return (
-    <div>
+    <div className="">
       <DefaultProjectList />
       <table className="table is-hoverable is-fullwidth">
         <thead>
