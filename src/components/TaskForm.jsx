@@ -5,7 +5,7 @@ import DateAndTimeSelector from "./DateAndTimeSelector";
 import FormButtons from "./FormButtons";
 // import PriorityTags from "./components/PriorityTags";
 import DropDown from "./DropDown";
-import moment from "moment";
+import * as exttime from "exttime";
 
 const TaskForm = () => {
   const store = useTask();
@@ -17,18 +17,12 @@ const TaskForm = () => {
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState(constants.selectPriority[0].value);
   const [tagList, setTagList] = useState([]);
+  const [skipIndex, setSkipIndex] = useState(0);
 
   useEffect(() => {
     tagList.forEach((tag) => {
       if (tag.category === constants.tagCategory.datetime) {
-        if (tag.id === 1) {
-          setDueDate(() => new Date(new Date().setHours(9, 0, 0, 0)));
-        } else if (tag.id === 2) {
-          setDueDate(
-            () =>
-              new Date(moment(new Date().setHours(9, 0, 0, 0)).add(1, "days"))
-          );
-        }
+        setDueDate(tag.datetime);
       } else if (tag.category === constants.tagCategory.projects) {
       }
     });
@@ -87,58 +81,45 @@ const TaskForm = () => {
   }
 
   function processText(input) {
+    const searchResult = exttime(input);
     const tempTagList = [...tagList];
-
-    const r_today = /(\btod\b|\btoday\b)/i;
-    const r_tomorrow = /(\btom\b|\btomorrow\b)/i;
     const category = constants.tagCategory.datetime;
 
-    if (
-      r_today.test(input) &&
-      !tempTagList.find((tag) => tag.id === 1) &&
-      !tempTagList.find(
-        (tag) => tag.category === constants.tagCategory.datetime
-      )
-    ) {
+    const containsDateTimeTag = tempTagList.find(
+      (tag) => tag.category === constants.tagCategory.datetime
+    );
+
+    if (Array.isArray(searchResult) && searchResult.length > 0) {
+      if (containsDateTimeTag) {
+        const index = tempTagList.findIndex(
+          (tag) => tag.category === constants.tagCategory.datetime
+        );
+        index !== -1 && tempTagList.splice(index, 1);
+      }
+      let dateTime, matchedText;
+      // check if the sentence has more than one date-time part and then
+      // check if the user has chose to skip the previous results
+      if (searchResult.length > skipIndex) {
+        dateTime = searchResult[skipIndex].dateTime;
+        matchedText = searchResult[skipIndex].matchedText;
+      } else {
+        dateTime = searchResult[0].dateTime;
+        matchedText = searchResult[0].matchedText;
+        setSkipIndex(searchResult.length - 1);
+      }
       tempTagList.push({
         id: 1,
-        text: "today",
+        text: matchedText,
         category: category,
+        datetime: dateTime,
       });
-      setTagList(tempTagList);
-    } else if (
-      !r_today.test(input) &&
-      tempTagList.find((tag) => tag.id === 1)
-    ) {
-      handleTagDelete(1);
-    }
-
-    if (
-      r_tomorrow.test(input) &&
-      !tempTagList.find((tag) => tag.id === 2) &&
-      !tempTagList.find(
+    } else if (containsDateTimeTag && searchResult.length === 0) {
+      const index = tempTagList.findIndex(
         (tag) => tag.category === constants.tagCategory.datetime
-      )
-    ) {
-      tempTagList.push({
-        id: 2,
-        text: "tomorrow",
-        category: category,
-      });
-      setTagList(tempTagList);
-    } else if (
-      !r_tomorrow.test(input) &&
-      tempTagList.find((tag) => tag.id === 2)
-    ) {
-      handleTagDelete(2);
+      );
+      index !== -1 && tempTagList.splice(index, 1);
     }
-
-    if (
-      !tempTagList.find(
-        (tag) => tag.category === constants.tagCategory.projects
-      )
-    ) {
-    }
+    setTagList(tempTagList);
   }
 
   function handleTagDelete(tagId) {
@@ -148,6 +129,7 @@ const TaskForm = () => {
       tempTagList.splice(index, 1);
       setTagList(tempTagList);
       setDueDate(new Date(constants.defaultDueDate));
+      setSkipIndex(skipIndex + 1);
     }
   }
 
