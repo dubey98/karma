@@ -1,5 +1,5 @@
+import { format, formatRelative } from "date-fns";
 import React, { useState } from "react";
-import moment from "moment";
 import * as constants from "../Constants/constants";
 
 const DateAndTimeSelector = ({ dateTime, setDateTime }) => {
@@ -40,7 +40,7 @@ const DateAndTimeSelector = ({ dateTime, setDateTime }) => {
             <input
               className="input"
               type="date"
-              value={moment(tempDateTime).format("yyyy-MM-DD")}
+              value={format(tempDateTime, "yyyy-MM-dd")}
               onChange={(e) => handleDateChange(e)}
             />
           </p>
@@ -50,7 +50,7 @@ const DateAndTimeSelector = ({ dateTime, setDateTime }) => {
             <input
               className="input"
               type="time"
-              value={moment(tempDateTime).format("HH:mm")}
+              value={format(tempDateTime, "HH:mm")}
               onChange={(e) => handleTimeChange(e)}
             />
           </p>
@@ -76,7 +76,7 @@ const DateAndTimeSelector = ({ dateTime, setDateTime }) => {
       <div className="button is-outlined is-light is-link">
         {new Date(dateTime).getTime() !==
         new Date(constants.defaultDueDate).getTime() ? (
-          <span>{moment(dateTime).calendar()}</span>
+          <span>{formatRelative(dateTime)}</span>
         ) : (
           <span>
             <span className="icon">

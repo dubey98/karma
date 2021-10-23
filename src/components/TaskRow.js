@@ -1,8 +1,9 @@
 import React from "react";
 import { useTask } from "../services/useTask";
 import { useGlobals } from "../services/useGlobals";
-import moment from "moment";
 import { defaultDueDate } from "../Constants/constants";
+import addDays from "date-fns/addDays";
+import { formatRelative } from "date-fns";
 
 function TaskRow({ task }) {
   const store = useTask();
@@ -13,7 +14,7 @@ function TaskRow({ task }) {
 
     if (
       new Date(task.dueDate).getTime() <
-      new Date(moment(new Date()).subtract(1, "days")).getTime()
+      new Date(addDays(new Date(), -1)).getTime()
     ) {
       className += "is-danger";
     } else if (new Date(task.dueDate).getTime() < new Date().getTime()) {
@@ -64,7 +65,7 @@ function TaskRow({ task }) {
               new Date(defaultDueDate).getTime() && (
               <span className="tags">
                 <span className={selectClassName()}>
-                  {moment(task.dueDate).calendar()}
+                  {formatRelative(task.dueDate, new Date())}
                 </span>
               </span>
             )}

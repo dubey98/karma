@@ -5,7 +5,7 @@ import DateAndTimeSelector from "./DateAndTimeSelector";
 import * as constants from "../Constants/constants";
 import FormButtons from "./FormButtons";
 import { useTask } from "../services/useTask";
-import moment from "moment";
+import { formatRelative } from "date-fns/esm";
 
 const TaskDetail = () => {
   const globals = useGlobals();
@@ -98,7 +98,8 @@ const TaskDetail = () => {
 
             <div className="field">
               <div className="control">
-                <strong>Due Date : </strong> {moment(dueDate).calendar()}
+                <strong>Due Date : </strong>
+                {formatRelative(task.dueDate, new Date())}
               </div>
             </div>
 

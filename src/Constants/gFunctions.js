@@ -1,4 +1,4 @@
-import moment from "moment";
+import { addDays } from "date-fns";
 
 function isNumeric(string) {
   if (typeof string != "string") return false;
@@ -27,7 +27,7 @@ function selectDateTime(dateTime, source, initialDateTime) {
 
 function getNextDayTimeStamp() {
   return new Date(
-    new Date(moment(new Date()).add(1, "days")).setHours(0, 0, 0, 0)
+    new Date(addDays(new Date(), 1)).setHours(0, 0, 0, 0)
   ).getTime();
 }
 

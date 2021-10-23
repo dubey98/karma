@@ -1,4 +1,4 @@
-import moment from "moment";
+import { addDays } from "date-fns/esm";
 import React, { useState, useEffect } from "react";
 import { selectPriority } from "../Constants/constants";
 import { useTask } from "../services/useTask";
@@ -57,15 +57,15 @@ function mapTaskByDueDate(taskList) {
   const sortOrder = [];
   for (let i = 1; i < 30; i++) {
     let taskListObj = {
-      display_name: moment(new Date()).add(i, "days").format("MMMM Do"),
+      display_name: addDays(new Date(), 1).format("MMM do"),
       key: i,
       tasks: [],
     };
     const startDate = new Date(
-      moment(new Date().setHours(0, 0, 0, 0)).add(i - 1, "days")
+      addDays(new Date(), -1).setHours(0, 0, 0, 0)
     ).getTime();
     const endDate = new Date(
-      moment(new Date().setHours(0, 0, 0, 0)).add(i, "days")
+      addDays(new Date(), -1).setHours(0, 0, 0, 0)
     ).getTime();
     taskListObj.tasks = taskList.filter((task) => {
       const dueDate = new Date(task.dueDate).getTime();
