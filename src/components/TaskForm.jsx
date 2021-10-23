@@ -26,6 +26,11 @@ const TaskForm = () => {
       } else if (tag.category === constants.tagCategory.projects) {
       }
     });
+    if (
+      !tagList.find((tag) => tag.category === constants.tagCategory.dateTime)
+    ) {
+      setDueDate(constants.defaultDueDate);
+    }
     return () => {};
   }, [tagList]);
 
