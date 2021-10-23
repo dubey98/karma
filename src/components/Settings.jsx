@@ -2,20 +2,15 @@ import React, { useState } from "react";
 import Toggler from "./Toggler";
 import { useTask } from "../services/useTask";
 import { useGlobals } from "../services/useGlobals";
-import { useHistory, withRouter } from "react-router";
+import { useLocation, withRouter } from "react-router";
 
 const Settings = () => {
   const [activated, setActivated] = useState(false);
   const store = useTask();
   const globals = useGlobals();
-  const history = useHistory();
 
   function handleCogClick() {
     setActivated(!activated);
-  }
-
-  function handleCalendarClick() {
-    history.push("/karma/calendar-view");
   }
 
   return (
@@ -68,11 +63,17 @@ const Settings = () => {
 };
 
 const CalendarButton = withRouter(({ history }) => {
+  const location = useLocation();
+
   return (
     <div className="level-item">
       <button
         className="button"
-        onClick={() => history.push("/karma/calendar-view")}
+        onClick={() =>
+          location.pathname === "/karma/calendar-view"
+            ? history.push("/karma")
+            : history.push("/karma/calendar-view")
+        }
       >
         Calendar
       </button>

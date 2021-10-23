@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { startOfMonth, getDaysInMonth, isSameDay } from "date-fns";
+import { useTask } from "../services/useTask";
 
 const Calendar = () => {
   const calendarContainer = useRef(null);
@@ -69,17 +70,19 @@ const Calendar = () => {
       return retValues;
     }
 
-    let startDate = daysInLastMonth - startDay;
     for (let i = 0; i < 6; i++) {
       const tempRow = [];
       for (let j = 0; j < 7; j++) {
-        const calCells = <CalendarCells {...getProperties(i * 7 + j)} />;
-        startDate === daysInLastMonth
-          ? (startDate = startDate + 2)
-          : startDate++;
+        const calCells = (
+          <CalendarCells {...getProperties(i * 7 + j)} key={i * 7 + j} />
+        );
         tempRow.push(calCells);
       }
-      const calRow = <div className="columns is-mobile">{tempRow}</div>;
+      const calRow = (
+        <div className="columns is-mobile" key={i}>
+          {tempRow}
+        </div>
+      );
       calRows.push(calRow);
     }
     return <div>{calRows}</div>;
@@ -94,6 +97,17 @@ const Calendar = () => {
 };
 
 function CalendarCells({ displayValue, width, classNames, dateTime }) {
+  const store = useTask();
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    let tempTasks = store.tasks.filter((task) =>
+      isSameDay(task.dueDate, dateTime)
+    );
+    setTasks(tempTasks);
+    return () => {};
+  }, [store.tasks, dateTime]);
+
   return (
     <div
       className={
@@ -102,9 +116,15 @@ function CalendarCells({ displayValue, width, classNames, dateTime }) {
           : "column m-1 " + classNames
       }
       style={{ height: width }}
-      key={new Date(dateTime).getMilliseconds()}
     >
-      {displayValue}
+      <div>{displayValue}</div>
+      <div>
+        {tasks.map((task) => (
+          <div className="has-background-white-bis" key={task.id}>
+            {task.title}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -123,7 +143,11 @@ function CalendarWeekDays({ width }) {
   return (
     <div className="columns is-mobile">
       {weekDays.map((day) => (
-        <div className="column has-text-centered " style={{ width: width }}>
+        <div
+          className="column has-text-centered "
+          style={{ width: width }}
+          key={day}
+        >
           {day}
         </div>
       ))}

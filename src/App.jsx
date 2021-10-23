@@ -32,7 +32,12 @@ const App = () => {
             <TaskDetail />
             <Switch>
               <Route path="/karma/calendar-view">
-                <Calendar />
+                <div className="container mx-auto">
+                  <div className="block">
+                    <Settings />
+                  </div>
+                  <Calendar />
+                </div>
               </Route>
               <Route path="/">
                 <div className="columns container mx-auto">
