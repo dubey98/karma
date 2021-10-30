@@ -2,7 +2,7 @@
   "name": "karma",
   "version": "1.0.0",
   "description": "A todo App",
-  "homepage": "https://dubey98.github.io/karma/",
+  "homepage": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -21,7 +21,7 @@
   "dependencies": {
     "bulma": "^0.9.3",
     "date-fns": "^2.25.0",
-    "exttime": "^1.0.2",
+    "exttime": "^1.0.3",
     "firebase": "^9.0.2",
     "node-sass": "^6.0.1",
     "react": "^17.0.2",
