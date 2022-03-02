@@ -9,14 +9,14 @@ import ProjectList from "./components/ProjectList";
 import Seo from "./services/Seo";
 import TaskDetail from "./components/TaskDetail";
 import { useAuth } from "./services/useAuth";
-import HomePage from "./components/HomePage";
+import HomePage from "./pages/HomePage";
 import "./App.scss";
 import Settings from "./components/Settings";
 import { useGlobals } from "./services/useGlobals";
 import Calendar from "./components/Calendar";
 
 const App = () => {
-  const auth = useAuth();
+  const { user } = useAuth();
   const globals = useGlobals();
 
   return (
@@ -26,49 +26,12 @@ const App = () => {
         <Navbar />
       </div>
 
-      {auth.user ? (
-        <section className="section">
-          <TaskContextProvider>
-            <TaskDetail />
-            <Switch>
-              <Route path="/karma/calendar-view">
-                <div className="container mx-auto">
-                  <div className="block">
-                    <Settings />
-                  </div>
-                  <Calendar />
-                </div>
-              </Route>
-              <Route path="/">
-                <div className="columns container mx-auto">
-                  <div
-                    className={
-                      globals.sideBarStatus
-                        ? "column is-one-fifth has-display-none transition-all-1"
-                        : "column is-one-fifth transition-all-1"
-                    }
-                  >
-                    <ProjectList />
-                  </div>
-                  <div className="column">
-                    <Settings />
-                    <div className="block">
-                      <TaskList />
-                    </div>
-                    <div className="block">
-                      <TaskForm />
-                    </div>
-                  </div>
-                </div>
-              </Route>
-            </Switch>
-          </TaskContextProvider>
-        </section>
-      ) : (
-        <div className="">
+      <section className="section">
+        <TaskContextProvider>
+          <TaskDetail />
           <HomePage />
-        </div>
-      )}
+        </TaskContextProvider>
+      </section>
     </Router>
   );
 };

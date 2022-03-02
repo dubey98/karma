@@ -21,7 +21,7 @@ function useAuthProvider() {
     const unsub = onAuthStateChanged(auth, (_user) => {
       if (_user) {
         setUser(_user);
-      }
+      } else setUser(null);
     });
     return unsub;
   }, []);
