@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import ProjectForm from "./ProjectForm";
-import { useTask } from "../services/useTask";
 import DefaultProjectList from "./DefaultProjectList";
 import useProject from "../services/useProject";
 
@@ -8,9 +7,8 @@ function ProjectList() {
   const { projects, currentProject, changeCurrentProject } = useProject();
   const [activated, setActivated] = useState(false);
 
-  async function handleChangeProject(project) {
-    console.log("handle change project called");
-    //await store.changeCurrentProject(project);
+  function handleChangeProject(project) {
+    changeCurrentProject(project);
   }
 
   return (
@@ -24,20 +22,21 @@ function ProjectList() {
         </thead>
         <tbody>
           {projects.map((project) => {
-            console.log(project);
-            return (
+            return project ? (
               <tr
                 key={project.id}
-                className={ currentProject ? 
-                  project.id === currentProject.id
-                    ? "is-selected is-clickable"
-                    : "is-clickable" : "is-clickable"
+                className={
+                  currentProject
+                    ? project.id === currentProject.id
+                      ? "is-selected is-clickable"
+                      : "is-clickable"
+                    : "is-clickable"
                 }
                 onClick={async () => await handleChangeProject(project)}
               >
                 <td>{project.title}</td>
               </tr>
-            );
+            ) : null;
           })}
         </tbody>
       </table>

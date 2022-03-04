@@ -13,7 +13,7 @@ const DefaultProjectList = () => {
   function handleProjectClick(project) {
     changeCurrentProject(project);
   }
-
+  // console.log("logging projects", projects);
   return (
     <table className="table is-hoverable is-fullwidth">
       <tbody>

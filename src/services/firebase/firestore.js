@@ -7,15 +7,19 @@ import {
   where,
   doc,
 } from "firebase/firestore";
+import { ProjectConverter } from "../../models/Project";
 
 const db = getFirestore();
 
 const projectListener = (userId, setProjects) => {
-  const q = query(collection(db, "projects"), where("uid", "==", userId || ""));
+  const q = query(
+    collection(db, "projects"),
+    where("uid", "==", userId || "")
+  ).withConverter(ProjectConverter);
   const unsub = onSnapshot(q, (querySnapshot) => {
     const p = [];
     querySnapshot.forEach((doc) => {
-      p.push({ ...doc.data(), id: doc.id });
+      p.push(doc.data());
     });
     setProjects(p);
   });

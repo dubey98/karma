@@ -27,7 +27,7 @@ function useProject() {
   }, [user.uid]);
 
   function changeCurrentProject(project) {
-    console.log(project);
+    // console.log("changing the current project to\n",project);
     setCurrentProject(project);
   }
 
