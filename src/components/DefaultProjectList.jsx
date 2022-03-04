@@ -7,7 +7,7 @@ const DefaultProjectList = () => {
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
-    setProjects({ defaultProject, ...defaultProjects });
+    setProjects([defaultProject, ...defaultProjects]);
   }, [defaultProject, currentProject]);
 
   function handleProjectClick(project) {
@@ -18,19 +18,21 @@ const DefaultProjectList = () => {
     <table className="table is-hoverable is-fullwidth">
       <tbody>
         {projects.map((project) => {
-          return (
+          return project ? (
             <tr
               key={project.id}
-              className={ currentProject ?
-                project.id === currentProject.id
-                  ? "is-selected is-clickable"
-                  : "" : "is-clickable" 
+              className={
+                currentProject
+                  ? project.id === currentProject.id
+                    ? "is-selected is-clickable"
+                    : ""
+                  : "is-clickable"
               }
               onClick={async () => handleProjectClick(project)}
             >
               <td>{project.title}</td>
             </tr>
-          );
+          ) : null;
         })}
       </tbody>
     </table>
