@@ -5,11 +5,12 @@ import {
   getProject,
 } from "./firebase/firestore";
 import { useAuth } from "./useAuth";
+import {useGlobals} from "./useGlobals"
 
 function useProject() {
   const { user } = useAuth();
+  const {changeCurrentProject} = useGlobals();
   const [projects, setProjects] = useState([]);
-  const [currentProject, setCurrentProject] = useState(null);
   const [defaultProject, setDefaultProject] = useState(null);
 
   useEffect(() => {
@@ -22,20 +23,15 @@ function useProject() {
       const defaultProjectId = await getDefaultProjectId(user.uid);
       const project = await getProject(defaultProjectId);
       setDefaultProject(project);
+      changeCurrentProject(project);
     }
     _getData();
   }, [user.uid]);
 
-  function changeCurrentProject(project) {
-    // console.log("changing the current project to\n",project);
-    setCurrentProject(project);
-  }
 
   return {
     projects,
-    currentProject,
     defaultProject,
-    changeCurrentProject,
   };
 }
 

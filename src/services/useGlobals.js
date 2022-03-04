@@ -18,7 +18,7 @@ function useGlobalProvider() {
   const isMobile = useMediaQuery({
     query: "(max-width: 1023px)",
   });
-
+  const [currentProject, setCurrentProject] = useState(null);
   const [taskDetailActivated, setTaskDetailActivated] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
   const [showCompleted, setShowCompleted] = useState(false);
@@ -47,6 +47,10 @@ function useGlobalProvider() {
     setSideBarStatus(status);
   }
 
+  function changeCurrentProject(p) {
+    setCurrentProject(p);
+  }
+
   return {
     isMobile,
     taskDetailActivated,
@@ -59,5 +63,7 @@ function useGlobalProvider() {
     setShowCompleted,
     setShowArchived,
     handleSideBarStatus,
+    currentProject,
+    changeCurrentProject,
   };
 }

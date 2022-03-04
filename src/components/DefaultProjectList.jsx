@@ -1,31 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { defaultProjects } from "../Constants/constants";
-import useProject from "../services/useProject";
+import { useGlobals } from "../services/useGlobals";
 
 const DefaultProjectList = () => {
-  const { currentProject, defaultProject, changeCurrentProject } = useProject();
-  const [projects, setProjects] = useState([]);
-
-  useEffect(() => {
-    setProjects([defaultProject, ...defaultProjects]);
-  }, [defaultProject, currentProject]);
+  const { currentProject, changeCurrentProject } = useGlobals();
 
   function handleProjectClick(project) {
     changeCurrentProject(project);
   }
-  // console.log("logging projects", projects);
+
   return (
     <table className="table is-hoverable is-fullwidth">
       <tbody>
-        {projects.map((project) => {
+        {defaultProjects.map((project) => {
           return project ? (
             <tr
               key={project.id}
               className={
-                currentProject
-                  ? project.id === currentProject.id
-                    ? "is-selected is-clickable"
-                    : ""
+                currentProject && project.id === currentProject.id
+                  ? "is-selected is-clickable"
                   : "is-clickable"
               }
               onClick={async () => handleProjectClick(project)}

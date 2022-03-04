@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ProjectForm from "./ProjectForm";
 import DefaultProjectList from "./DefaultProjectList";
 import useProject from "../services/useProject";
+import { useGlobals } from "../services/useGlobals";
 
 function ProjectList() {
-  const { projects, currentProject, changeCurrentProject } = useProject();
+  const { projects, defaultProject } = useProject();
+  const { currentProject, changeCurrentProject } = useGlobals();
   const [activated, setActivated] = useState(false);
 
   function handleChangeProject(project) {
@@ -26,13 +28,12 @@ function ProjectList() {
               <tr
                 key={project.id}
                 className={
-                  currentProject
-                    ? project.id === currentProject.id
-                      ? "is-selected is-clickable"
-                      : "is-clickable"
-                    : "is-clickable"
+                  "is-clickable" +
+                  (currentProject && project.id === currentProject.id
+                    ? " is-selected"
+                    : "")
                 }
-                onClick={async () => await handleChangeProject(project)}
+                onClick={() => handleChangeProject(project)}
               >
                 <td>{project.title}</td>
               </tr>

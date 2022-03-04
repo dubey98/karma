@@ -16,7 +16,6 @@ const ProjectConverter = {
     };
   },
   fromFirestore: (snapShot, options) => {
-    console.log("logging project converter\n", snapShot, options);
     const data = snapShot.data(options);
     return new Project(
       snapShot.id,
