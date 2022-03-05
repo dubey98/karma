@@ -1,49 +1,40 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useTask } from "../services/useTask";
-import * as constants from "../Constants/constants";
+import { defaultProjectIds, selectPriority } from "../Constants/constants";
 import DateAndTimeSelector from "./DateAndTimeSelector";
 import FormButtons from "./FormButtons";
-// import PriorityTags from "./components/PriorityTags";
 import DropDown from "./DropDown";
-import * as exttime from "exttime";
+import { useGlobals } from "../services/useGlobals";
+import useProject from "../services/useProject";
+import { useAuth } from "../services/useAuth";
 
 const TaskForm = () => {
-  const store = useTask();
+  const { addTask } = useTask();
+  const { currentProject } = useGlobals();
+  const { defaultProject } = useProject();
+  const { user } = useAuth();
 
   const [activated, setActivated] = useState(false);
   const [title, setTitle] = useState("");
   const [titleError, setTitleError] = useState("");
-  const [dueDate, setDueDate] = useState(constants.defaultDueDate);
+  const [dueDate, setDueDate] = useState(new Date());
   const [description, setDescription] = useState("");
-  const [priority, setPriority] = useState(constants.selectPriority[0].value);
-  const [tagList, setTagList] = useState([]);
-  const [skipIndex, setSkipIndex] = useState(0);
+  const [priority, setPriority] = useState(selectPriority[0].value);
 
-  useEffect(() => {
-    tagList.forEach((tag) => {
-      if (tag.category === constants.tagCategory.datetime) {
-        setDueDate(tag.datetime);
-      } else if (tag.category === constants.tagCategory.projects) {
-      }
-    });
-    if (
-      !tagList.find((tag) => tag.category === constants.tagCategory.dateTime)
-    ) {
-      setDueDate(constants.defaultDueDate);
-    }
-    return () => {};
-  }, [tagList]);
-
-  async function addTask() {
+  async function _addTask() {
     if (validateInput()) {
       const newTask = {
-        title: title,
-        description: description,
+        title: title.trim(),
+        description: description.trim(),
         completed: false,
         dueDate: dueDate,
         priority: priority,
+        projectId: defaultProjectIds.includes(currentProject.id)
+          ? defaultProject.id
+          : currentProject.id,
+        uId: user.uid,
       };
-      await store.addTask(newTask);
+      await addTask(newTask);
       setActivated(false);
       resetForm();
     }
@@ -56,11 +47,10 @@ const TaskForm = () => {
 
   function resetForm() {
     setTitle("");
-    setDueDate(constants.defaultDueDate);
+    setDueDate(new Date());
     setTitleError("");
-    setPriority(constants.selectPriority[0].value);
+    setPriority(selectPriority[0].value);
     setDescription("");
-    setTagList([]);
   }
 
   function validateInput() {
@@ -82,60 +72,6 @@ const TaskForm = () => {
 
   function handleTitleChange(title) {
     setTitle(title);
-    processText(title);
-  }
-
-  function processText(input) {
-    const searchResult = exttime(input);
-    const tempTagList = [...tagList];
-    const category = constants.tagCategory.datetime;
-
-    const containsDateTimeTag = tempTagList.find(
-      (tag) => tag.category === constants.tagCategory.datetime
-    );
-
-    if (Array.isArray(searchResult) && searchResult.length > 0) {
-      if (containsDateTimeTag) {
-        const index = tempTagList.findIndex(
-          (tag) => tag.category === constants.tagCategory.datetime
-        );
-        index !== -1 && tempTagList.splice(index, 1);
-      }
-      let dateTime, matchedText;
-      // check if the sentence has more than one date-time part and then
-      // check if the user has chose to skip the previous results
-      if (searchResult.length > skipIndex) {
-        dateTime = searchResult[skipIndex].dateTime;
-        matchedText = searchResult[skipIndex].matchedText;
-      } else {
-        dateTime = searchResult[0].dateTime;
-        matchedText = searchResult[0].matchedText;
-        setSkipIndex(searchResult.length - 1);
-      }
-      tempTagList.push({
-        id: 1,
-        text: matchedText,
-        category: category,
-        datetime: dateTime,
-      });
-    } else if (containsDateTimeTag && searchResult.length === 0) {
-      const index = tempTagList.findIndex(
-        (tag) => tag.category === constants.tagCategory.datetime
-      );
-      index !== -1 && tempTagList.splice(index, 1);
-    }
-    setTagList(tempTagList);
-  }
-
-  function handleTagDelete(tagId) {
-    const tempTagList = [...tagList];
-    const index = tempTagList.findIndex((tag) => tag.id === tagId);
-    if (index !== -1) {
-      tempTagList.splice(index, 1);
-      setTagList(tempTagList);
-      setDueDate(new Date(constants.defaultDueDate));
-      setSkipIndex(skipIndex + 1);
-    }
   }
 
   return activated ? (
@@ -176,23 +112,8 @@ const TaskForm = () => {
             <DropDown
               initialValue={priority}
               handleValueChange={handleTaskPriority}
-              dropDownOptions={constants.selectPriority}
+              dropDownOptions={selectPriority}
             />
-          </div>
-          <div className="column pb-0">
-            <div className="tags">
-              {tagList.map((tag) => {
-                return (
-                  <span className="tag is-info is-light" key={tag.id}>
-                    {tag.text}
-                    <button
-                      className="delete is-small"
-                      onClick={() => handleTagDelete(tag.id)}
-                    ></button>
-                  </span>
-                );
-              })}
-            </div>
           </div>
           <div className="column is-narrow">
             <DateAndTimeSelector dateTime={dueDate} setDateTime={setDateTime} />
@@ -202,7 +123,7 @@ const TaskForm = () => {
 
       <div className="p-1">
         <FormButtons
-          button1Click={addTask}
+          button1Click={_addTask}
           button1Text={"Add Task"}
           button2Click={handleFormClose}
           button2Text={"Cancel"}

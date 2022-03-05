@@ -4,17 +4,10 @@ import * as constants from "../Constants/constants";
 
 const DateAndTimeSelector = ({ dateTime, setDateTime }) => {
   const [activated, setActivated] = useState(false);
-  const [tempDateTime, setTempDateTime] = useState(dateTime);
+  const [tempDateTime, setTempDateTime] = useState(dateTime || new Date());
 
   function handleDateChange(e) {
-    setTempDateTime(new Date(new Date(e.target.value).setHours(9, 0, 0, 0)));
-  }
-
-  function handleTimeChange(e) {
-    const timeDetail = e.target.value.toString().split(":");
-    setTempDateTime(
-      new Date(new Date(tempDateTime).setHours(timeDetail[0], timeDetail[1]))
-    );
+    setTempDateTime(new Date(e.target.value));
   }
 
   function handleActivation() {
@@ -23,7 +16,6 @@ const DateAndTimeSelector = ({ dateTime, setDateTime }) => {
   }
 
   function handleCancelClick() {
-    setTempDateTime(dateTime);
     setActivated(false);
   }
 
@@ -39,19 +31,13 @@ const DateAndTimeSelector = ({ dateTime, setDateTime }) => {
           <p className="control ">
             <input
               className="input"
-              type="date"
-              value={format(tempDateTime, "yyyy-MM-dd")}
+              type="datetime-local"
+              value={
+                format(tempDateTime, "yyyy-MM-dd") +
+                "T" +
+                format(tempDateTime, "hh:mm")
+              }
               onChange={(e) => handleDateChange(e)}
-            />
-          </p>
-        </div>
-        <div className="field">
-          <p className="control">
-            <input
-              className="input"
-              type="time"
-              value={format(tempDateTime, "HH:mm")}
-              onChange={(e) => handleTimeChange(e)}
             />
           </p>
         </div>
@@ -76,7 +62,7 @@ const DateAndTimeSelector = ({ dateTime, setDateTime }) => {
       <div className="button is-outlined is-light is-link">
         {new Date(dateTime).getTime() !==
         new Date(constants.defaultDueDate).getTime() ? (
-          <span>{formatRelative(dateTime)}</span>
+          <span>{formatRelative(dateTime,new Date())}</span>
         ) : (
           <span>
             <span className="icon">

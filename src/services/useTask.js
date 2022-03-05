@@ -1,20 +1,8 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import {
-  collection,
-  doc,
-  getFirestore,
-  query,
-  addDoc,
-  updateDoc,
-  setDoc,
-  serverTimestamp,
-  getDoc,
-} from "firebase/firestore";
 import { useAuth } from "./useAuth";
 import { useGlobals } from "./useGlobals";
 import useProject from "./useProject";
-
-const db = getFirestore();
+import { taskListener, addTaskFS } from "./firebase/firestore";
 
 const taskContext = createContext(null);
 
@@ -27,16 +15,27 @@ export function TaskContextProvider({ children }) {
   return <taskContext.Provider value={task}>{children}</taskContext.Provider>;
 }
 
-const fs = ":::::::::::::::::::Firestore fetch:::::::::::::::::::::";
-
 function useTaskProvider() {
   const { user } = useAuth();
   const { currentProject, changeCurrentProject } = useGlobals();
   const { defaultProject } = useProject();
   const [tasks, setTasks] = useState(null);
 
-  const addTask = async () => {
-    console.log("add task fn");
+  useEffect(() => {
+    let unsub = () => {};
+    if (currentProject && user) {
+      unsub = taskListener(currentProject.id, user.uid, setTasks);
+    }
+    return unsub;
+  }, [currentProject, user]);
+
+  const addTask = async (task) => {
+    console.log("adding Task", task);
+    try {
+      await addTaskFS(task, currentProject.id);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const updateTask = async () => {

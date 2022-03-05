@@ -6,8 +6,11 @@ import {
   query,
   where,
   doc,
+  collectionGroup,
+  addDoc,
 } from "firebase/firestore";
 import { ProjectConverter } from "../../models/Project";
+import { TaskConverter } from "../../models/Task";
 
 const db = getFirestore();
 
@@ -53,4 +56,35 @@ const getProject = async (projectId) => {
   return project;
 };
 
-export { projectListener, getDefaultProjectId, getProject };
+const taskListener = async (projectId, userId, setTasks) => {
+  const q = query(
+    collectionGroup(db, "tasks"),
+    where("projectId", "==", projectId),
+    where("uId", "==", userId)
+  ).withConverter(TaskConverter);
+  const unsub = onSnapshot(q, (snapShot) => {
+    const t = [];
+    snapShot.forEach((doc) => {
+      t.push(doc.data());
+    });
+    setTasks(t);
+  });
+  return unsub;
+};
+
+const addTaskFS = async (task, projectId) => {
+  const taskRef = await addDoc(
+    collection(db, "projects", projectId, "tasks"),
+    task
+  );
+  console.log("task added with the id:", taskRef.id);
+  return taskRef.id;
+};
+
+export {
+  projectListener,
+  getDefaultProjectId,
+  getProject,
+  taskListener,
+  addTaskFS,
+};
