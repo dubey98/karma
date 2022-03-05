@@ -1,23 +1,24 @@
-import { addDays } from "date-fns/esm";
+import { addDays, format } from "date-fns/esm";
 import React, { useState, useEffect } from "react";
 import { selectPriority } from "../Constants/constants";
+import { useGlobals } from "../services/useGlobals";
 import { useTask } from "../services/useTask";
 import TaskRow from "./TaskRow";
 
-function TaskList() {
+export default function TaskList() {
   const store = useTask();
+  const { currentProject } = useGlobals();
   const [taskTable, setTaskTable] = useState(<></>);
 
   useEffect(() => {
-    if (store.currentProject) {
+    if (currentProject) {
       const _taskTable =
-        store.currentProject.id.toString() === "1"
+        currentProject.id.toString() === "1"
           ? mapTaskByDueDate(store.tasks)
           : mapTasksbyPriority(store.tasks);
       setTaskTable(_taskTable);
     }
-    return () => {};
-  }, [store.tasks, store.currentProject]);
+  }, [store.tasks, currentProject]);
 
   return <div>{taskTable}</div>;
 }
@@ -30,24 +31,28 @@ function mapTasksbyPriority(taskList) {
     .map((priority) => {
       return { ...priority, tasks: [] };
     });
-  const tasks = taskList.sort((p1, p2) => {
-    return new Date(p1.dueDate).getTime() - new Date(p2.dueDate).getTime();
-  });
-  for (let i = 0; i < tasks.length; i++) {
-    const task = tasks[i];
-    let index = priorityList.length - 1;
+  const tasks =
+    taskList &&
+    taskList.sort((p1, p2) => {
+      return new Date(p1.dueDate).getTime() - new Date(p2.dueDate).getTime();
+    });
+  if (tasks) {
+    for (let i = 0; i < tasks.length; i++) {
+      const task = tasks[i];
+      let index = priorityList.length - 1;
 
-    // find out at which index out task is goinf to go into
-    for (let p = 0; p < priorityList.length; p++) {
-      const priority = priorityList[p];
-      // console.log(priority.value, task.priority);
-      if (parseInt(priority.value) === parseInt(task.priority)) {
-        index = p;
-        break;
+      // find out at which index out task is goinf to go into
+      for (let p = 0; p < priorityList.length; p++) {
+        const priority = priorityList[p];
+        // console.log(priority.value, task.priority);
+        if (parseInt(priority.value) === parseInt(task.priority)) {
+          index = p;
+          break;
+        }
       }
+      // assign task to that index
+      priorityList[index].tasks.push(task);
     }
-    // assign task to that index
-    priorityList[index].tasks.push(task);
   }
 
   return mapTaskTable(priorityList);
@@ -57,7 +62,7 @@ function mapTaskByDueDate(taskList) {
   const sortOrder = [];
   for (let i = 1; i < 30; i++) {
     let taskListObj = {
-      display_name: addDays(new Date(), 1).format("MMM do"),
+      display_name: addDays(new Date(), 1),
       key: i,
       tasks: [],
     };
@@ -67,10 +72,12 @@ function mapTaskByDueDate(taskList) {
     const endDate = new Date(
       addDays(new Date(), -1).setHours(0, 0, 0, 0)
     ).getTime();
-    taskListObj.tasks = taskList.filter((task) => {
-      const dueDate = new Date(task.dueDate).getTime();
-      return dueDate > startDate && dueDate < endDate;
-    });
+    taskListObj.tasks =
+      taskList &&
+      taskList.filter((task) => {
+        const dueDate = new Date(task.dueDate).getTime();
+        return dueDate > startDate && dueDate < endDate;
+      });
     sortOrder.push(taskListObj);
   }
   return mapTaskTable(sortOrder);
@@ -78,31 +85,30 @@ function mapTaskByDueDate(taskList) {
 
 function mapTaskTable(organizedTaskLists) {
   const TaskTable = [];
-  organizedTaskLists.forEach((separator) => {
-    if (separator.tasks.length > 0) {
-      const element = (
-        <table
-          className="table is-fullwidth is-hoverable m-0 p-0"
-          key={separator.key}
-        >
-          <thead>
-            <tr>
-              <th>{separator.display_name}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {separator.tasks.map((task) => {
-              return <TaskRow task={task} key={task.id} />;
-            })}
-          </tbody>
-        </table>
-      );
+  organizedTaskLists &&
+    organizedTaskLists.forEach((separator) => {
+      if (separator.tasks && separator.tasks.length > 0) {
+        const element = (
+          <table
+            className="table is-fullwidth is-hoverable m-0 p-0"
+            key={separator.key}
+          >
+            <thead>
+              <tr>
+                <th>{separator.display_name}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {separator.tasks.map((task) => {
+                return <TaskRow task={task} key={task.id} />;
+              })}
+            </tbody>
+          </table>
+        );
 
-      TaskTable.push(element);
-    }
-  });
+        TaskTable.push(element);
+      }
+    });
 
   return TaskTable;
 }
-
-export default TaskList;

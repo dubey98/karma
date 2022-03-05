@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { useTask } from "../services/useTask";
+import useProject from "../services/useProject";
 
 const ProjectForm = ({ setActivated }) => {
-  const store = useTask();
+  const {addProject, deleteProject, updateProject} = useProject();
   const [title, setTitle] = useState("");
   const [titleError, setTitleError] = useState("");
 
@@ -14,7 +14,7 @@ const ProjectForm = ({ setActivated }) => {
 
   async function handleAddProject() {
     if (validateInput()) {
-      await store.addProject(title);
+      await addProject(title);
       setActivated(false);
     }
   }
