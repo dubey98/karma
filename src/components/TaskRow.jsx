@@ -6,7 +6,7 @@ import addDays from "date-fns/addDays";
 import { formatRelative } from "date-fns";
 
 function TaskRow({ task }) {
-  const store = useTask();
+  const { deleteTask, changeTaskStatus } = useTask();
   const globals = useGlobals();
 
   function selectClassName() {
@@ -43,7 +43,7 @@ function TaskRow({ task }) {
         >
           <span
             className="icon is-align-self-center"
-            onClick={() => store.changeTaskStatus(task, !task.completed)}
+            onClick={() => changeTaskStatus(task, !task.completed)}
           >
             {task.completed ? (
               <i className="fas fa-check-circle"></i>
@@ -77,7 +77,7 @@ function TaskRow({ task }) {
 
         <div
           className="column is-narrow is-flex is-clickable  "
-          onClick={async () => await store.deleteTask(task)}
+          onClick={async () => await deleteTask(task)}
           style={style}
         >
           {globals.showArchived ? (
