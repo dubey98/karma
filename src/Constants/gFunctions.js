@@ -1,4 +1,4 @@
-import { addDays } from "date-fns";
+import { addDays, formatRelative } from "date-fns";
 
 function isNumeric(string) {
   if (typeof string != "string") return false;
@@ -35,4 +35,22 @@ function getPrevDayTimeStamp() {
   return new Date(new Date().setHours(0, 0, 0, 0)).getTime();
 }
 
-export { getNextDayTimeStamp, getPrevDayTimeStamp, selectDateTime, isNumeric };
+function formateRelativeWrapper(date) {
+  // console.log(date);
+  let retVal = "";
+  try {
+    retVal = formatRelative(date, new Date());
+  } catch (err) {
+    console.log(err);
+    retVal = new Date(date).toDateString();
+  }
+  return retVal;
+}
+
+export {
+  getNextDayTimeStamp,
+  getPrevDayTimeStamp,
+  selectDateTime,
+  isNumeric,
+  formateRelativeWrapper,
+};

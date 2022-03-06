@@ -1,24 +1,25 @@
 import { addDays, format } from "date-fns/esm";
 import React, { useState, useEffect } from "react";
 import { selectPriority } from "../Constants/constants";
+import { formateRelativeWrapper } from "../Constants/gFunctions";
 import { useGlobals } from "../services/useGlobals";
 import { useTask } from "../services/useTask";
 import TaskRow from "./TaskRow";
 
 export default function TaskList() {
-  const store = useTask();
+  const { tasks } = useTask();
   const { currentProject } = useGlobals();
   const [taskTable, setTaskTable] = useState(<></>);
 
   useEffect(() => {
     if (currentProject) {
       const _taskTable =
-        currentProject.id.toString() === "1"
-          ? mapTaskByDueDate(store.tasks)
-          : mapTasksbyPriority(store.tasks);
+        currentProject.id.toString().trim() === "1"
+          ? mapTaskByDueDate(tasks)
+          : mapTasksbyPriority(tasks);
       setTaskTable(_taskTable);
     }
-  }, [store.tasks, currentProject]);
+  }, [tasks, currentProject]);
 
   return <div>{taskTable}</div>;
 }
@@ -61,16 +62,17 @@ function mapTasksbyPriority(taskList) {
 function mapTaskByDueDate(taskList) {
   const sortOrder = [];
   for (let i = 1; i < 30; i++) {
+    // console.log(addDays(new Date(), i));
     let taskListObj = {
-      display_name: addDays(new Date(), 1),
+      display_name: formateRelativeWrapper(addDays(new Date(), i)),
       key: i,
       tasks: [],
     };
     const startDate = new Date(
-      addDays(new Date(), -1).setHours(0, 0, 0, 0)
+      addDays(new Date(), i).setHours(0, 0, 0, 0)
     ).getTime();
     const endDate = new Date(
-      addDays(new Date(), -1).setHours(0, 0, 0, 0)
+      addDays(new Date(), i + 1).setHours(0, 0, 0, 0)
     ).getTime();
     taskListObj.tasks =
       taskList &&

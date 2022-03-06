@@ -2,7 +2,7 @@
 
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "./../../config/firebase.config";
-import * as firebase from "./../firebase";
+import { addUser, createDefaultProject, checkIfUserExists } from "./firestore";
 
 const signInWithGoogle = async () => {
   const provider = new GoogleAuthProvider();
@@ -35,11 +35,11 @@ const firebaseSignOut = async () => {
 };
 
 const _setUpFIrstTimeUser = async (userId) => {
-  const userExists = await firebase.checkIfUserExists(userId);
+  const userExists = await checkIfUserExists(userId);
   if (!userExists) {
     const user = auth.currentUser;
-    await firebase.addUser(user);
-    await firebase.createDefaultProject(user.uid);
+    await addUser(user);
+    await createDefaultProject(user.uid);
   }
 };
 

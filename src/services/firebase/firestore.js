@@ -11,9 +11,12 @@ import {
   addDoc,
   deleteDoc,
   setDoc,
+  serverTimestamp,
+  updateDoc,
 } from "firebase/firestore";
 import { ProjectConverter } from "../../models/Project";
 import { TaskConverter } from "../../models/Task";
+import { defaultProjectDetails } from "./../../Constants/constants";
 
 const db = getFirestore();
 
@@ -76,7 +79,6 @@ const addTaskFS = async (task, projectId) => {
     collection(db, "projects", projectId, "tasks"),
     task
   );
-  console.log("task added with the id:", taskRef.id);
   return taskRef.id;
 };
 
@@ -90,17 +92,67 @@ const updateTaskFS = async (task, newData) => {
   await setDoc(taskRef, newData, { merge: true });
 };
 
+async function checkIfUserExists(userId) {
+  let result = false;
+  if (userId !== "") {
+    const q = query(doc(db, "users", userId));
+    const snapShot = await getDoc(q);
+    if (snapShot.exists()) {
+      result = true;
+    }
+  }
+  return result;
+}
+
+async function addUser(user) {
+  if (user !== null) {
+    const newUser = {
+      displayName: user.displayName,
+      email: user.email,
+      photoURL: user.photoURL,
+      emailVerified: user.emailVerified,
+    };
+    const uid = user.uid;
+
+    const result = await setDoc(doc(db, "users", uid), {
+      ...newUser,
+    });
+    console.log(result);
+  }
+}
+
+async function createDefaultProject(userId) {
+  if (userId !== null) {
+    const _project = {
+      ...defaultProjectDetails,
+      timestamp: serverTimestamp(),
+      uid: userId,
+    };
+    const result = await addDoc(collection(db, "projects"), {
+      ..._project,
+    });
+    await updateDoc(doc(db, "users", userId), {
+      defaultProjectId: result.id,
+    });
+  }
+}
+
 export {
   projectListener,
   getDefaultProjectId,
   getProject,
+  createDefaultProject,
   taskListener,
   addTaskFS,
   deleteTaskFS,
   updateTaskFS,
+  addUser,
+  checkIfUserExists,
 };
 
 function _getTaskQuery(projectId, userId, options) {
+  const startOfToday = new Date(new Date().setHours(0, 0, 0, 0));
+  const endOfToday = new Date(addDays(new Date(), 1).setHours(0, 0, 0, 0));
   let q = query(
     collectionGroup(db, "tasks"),
     where("projectId", "==", projectId),
@@ -112,8 +164,8 @@ function _getTaskQuery(projectId, userId, options) {
     q = query(
       collectionGroup(db, "tasks"),
       where("uId", "==", userId),
-      where("dueDate", ">", new Date().setHours(0, 0, 0, 0)),
-      where("dueDate", "<", addDays(new Date(), 1).setHours(0, 0, 0, 0)),
+      where("dueDate", ">", startOfToday),
+      where("dueDate", "<", endOfToday),
       where("completed", "==", false),
       where("archived", "==", false)
     );
@@ -121,7 +173,7 @@ function _getTaskQuery(projectId, userId, options) {
     q = query(
       collectionGroup(db, "tasks"),
       where("uId", "==", userId),
-      where("dueDate", ">", addDays(new Date(), 1).setHours(0, 0, 0, 0)),
+      where("dueDate", ">", endOfToday),
       where("completed", "==", false),
       where("archived", "==", false)
     );

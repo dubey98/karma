@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useTask } from "../services/useTask";
 import { useGlobals } from "../services/useGlobals";
 import { defaultDueDate } from "../Constants/constants";
+import { formateRelativeWrapper } from "../Constants/gFunctions";
 import addDays from "date-fns/addDays";
-import { formatRelative } from "date-fns";
 import TaskDetail from "./TaskDetail";
 
 function TaskRow({ task }) {
@@ -74,7 +74,7 @@ function TaskRow({ task }) {
               new Date(defaultDueDate).getTime() && (
               <span className="tags">
                 <span className={selectClassName()}>
-                  {formateDate(task.dueDate)}
+                  {formateRelativeWrapper(task.dueDate)}
                 </span>
               </span>
             )}
@@ -102,17 +102,6 @@ function TaskRow({ task }) {
       </td>
     </tr>
   );
-}
-
-function formateDate(date) {
-  let retVal = "";
-  try {
-    retVal = formatRelative(date, new Date());
-  } catch (err) {
-    console.log(err);
-    retVal = new Date(date).toDateString();
-  }
-  return retVal;
 }
 
 export default TaskRow;
