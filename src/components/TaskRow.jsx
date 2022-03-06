@@ -27,9 +27,9 @@ function TaskRow({ task }) {
     return className;
   }
 
-  function handleTaskDelete(task) {
+  async function handleTaskDelete(task) {
     if (window.confirm("do you really want to delete this task?")) {
-      deleteTask(task);
+      await deleteTask(task);
     }
   }
 
@@ -74,7 +74,7 @@ function TaskRow({ task }) {
               new Date(defaultDueDate).getTime() && (
               <span className="tags">
                 <span className={selectClassName()}>
-                  {formatRelative(task.dueDate, new Date())}
+                  {formateDate(task.dueDate)}
                 </span>
               </span>
             )}
@@ -102,6 +102,17 @@ function TaskRow({ task }) {
       </td>
     </tr>
   );
+}
+
+function formateDate(date) {
+  let retVal = "";
+  try {
+    retVal = formatRelative(date, new Date());
+  } catch (err) {
+    console.log(err);
+    retVal = new Date(date).toDateString();
+  }
+  return retVal;
 }
 
 export default TaskRow;

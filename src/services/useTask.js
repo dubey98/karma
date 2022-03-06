@@ -8,6 +8,7 @@ import {
   deleteTaskFS,
   updateTaskFS,
 } from "./firebase/firestore";
+import { defaultProjectIds } from "../Constants/constants";
 
 const taskContext = createContext(null);
 
@@ -29,7 +30,11 @@ function useTaskProvider() {
   useEffect(() => {
     let unsub = () => {};
     if (currentProject && user) {
-      unsub = taskListener(currentProject.id, user.uid, setTasks);
+      let options = {
+        getTodays: currentProject.id == 0,
+        getUpcoming: currentProject.id == 1,
+      };
+      unsub = taskListener(currentProject.id, user.uid, setTasks, options);
     }
     return unsub;
   }, [currentProject, user]);

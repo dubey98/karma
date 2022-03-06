@@ -14,9 +14,12 @@ function useProject() {
   const [defaultProject, setDefaultProject] = useState(null);
 
   useEffect(() => {
-    const unsub = projectListener(user ? user.uid : "", setProjects);
+    let unsub = () => {};
+    if (user) {
+      unsub = projectListener(user ? user.uid : "", setProjects);
+    }
     return unsub;
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     async function _getData() {
@@ -25,7 +28,7 @@ function useProject() {
       setDefaultProject(project);
       changeCurrentProject(project);
     }
-    _getData();
+    user && _getData();
   }, [user]);
 
   const addProject = async () => {

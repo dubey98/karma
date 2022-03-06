@@ -1,3 +1,4 @@
+import { addDays } from "date-fns";
 import {
   collection,
   getDoc,
@@ -58,12 +59,8 @@ const getProject = async (projectId) => {
   return project;
 };
 
-const taskListener = async (projectId, userId, setTasks) => {
-  const q = query(
-    collectionGroup(db, "tasks"),
-    where("projectId", "==", projectId),
-    where("uId", "==", userId)
-  ).withConverter(TaskConverter);
+const taskListener = async (projectId, userId, setTasks, options) => {
+  let q = _getTaskQuery(projectId, userId, options);
   const unsub = onSnapshot(q, (snapShot) => {
     const t = [];
     snapShot.forEach((doc) => {
@@ -102,3 +99,32 @@ export {
   deleteTaskFS,
   updateTaskFS,
 };
+
+function _getTaskQuery(projectId, userId, options) {
+  let q = query(
+    collectionGroup(db, "tasks"),
+    where("projectId", "==", projectId),
+    where("uId", "==", userId),
+    where("completed", "==", false),
+    where("archived", "==", false)
+  );
+  if (options.getTodays) {
+    q = query(
+      collectionGroup(db, "tasks"),
+      where("uId", "==", userId),
+      where("dueDate", ">", new Date().setHours(0, 0, 0, 0)),
+      where("dueDate", "<", addDays(new Date(), 1).setHours(0, 0, 0, 0)),
+      where("completed", "==", false),
+      where("archived", "==", false)
+    );
+  } else if (options.getUpcoming) {
+    q = query(
+      collectionGroup(db, "tasks"),
+      where("uId", "==", userId),
+      where("dueDate", ">", addDays(new Date(), 1).setHours(0, 0, 0, 0)),
+      where("completed", "==", false),
+      where("archived", "==", false)
+    );
+  }
+  return q.withConverter(TaskConverter);
+}
