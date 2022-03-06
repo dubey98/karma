@@ -64,11 +64,13 @@ const getProject = async (projectId) => {
 
 const taskListener = async (projectId, userId, setTasks, options) => {
   let q = _getTaskQuery(projectId, userId, options);
+  // console.log(options);
   const unsub = onSnapshot(q, (snapShot) => {
     const t = [];
     snapShot.forEach((doc) => {
       t.push(doc.data());
     });
+    // console.log(t)
     setTasks(t);
   });
   return unsub;

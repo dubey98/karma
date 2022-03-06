@@ -1,7 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useAuth } from "./useAuth";
 import { useGlobals } from "./useGlobals";
-import useProject from "./useProject";
 import {
   taskListener,
   addTaskFS,
@@ -29,8 +28,8 @@ function useTaskProvider() {
     let unsub = () => {};
     if (currentProject && user) {
       let options = {
-        getTodays: currentProject.id === 0,
-        getUpcoming: currentProject.id === 1,
+        getTodays: currentProject.id === "0",
+        getUpcoming: currentProject.id === "1",
         showArchived: showArchived,
         showCompleted: showCompleted,
       };

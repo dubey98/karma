@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Toggler from "./Toggler";
 import { useGlobals } from "../services/useGlobals";
-import { useLocation, withRouter } from "react-router";
 
 const Settings = () => {
   const [activated, setActivated] = useState(false);
