@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import Toggler from "./Toggler";
-import { useTask } from "../services/useTask";
 import { useGlobals } from "../services/useGlobals";
 import { useLocation, withRouter } from "react-router";
 
 const Settings = () => {
   const [activated, setActivated] = useState(false);
-  const store = useTask();
-  const globals = useGlobals();
+  const {
+    currentProject,
+    showCompleted,
+    setShowCompleted,
+    showArchived,
+    setShowArchived,
+  } = useGlobals();
 
   function handleCogClick() {
     setActivated(!activated);
@@ -18,11 +22,10 @@ const Settings = () => {
       <div className="level p-2 is-mobile">
         <div className="level-left">
           <div className="level-item is-size-4 is-uppercase has-text-weight-semibold">
-            {store.currentProject ? store.currentProject.title : ""}
+            {currentProject && currentProject.title}
           </div>
         </div>
         <div className="level-right">
-          <CalendarButton />
           <div className="level-item">
             <button className="button" onClick={() => handleCogClick()}>
               <span className="icon">
@@ -40,8 +43,8 @@ const Settings = () => {
             </div>
             <div className="column is-narrow">
               <Toggler
-                togglerOn={globals.showCompleted}
-                setTogglerOn={globals.setShowCompleted}
+                togglerOn={showCompleted}
+                setTogglerOn={setShowCompleted}
               />
             </div>
           </div>
@@ -51,8 +54,8 @@ const Settings = () => {
             </div>
             <div className="column is-narrow">
               <Toggler
-                togglerOn={globals.showArchived}
-                setTogglerOn={globals.setShowArchived}
+                togglerOn={showArchived}
+                setTogglerOn={setShowArchived}
               />
             </div>
           </div>

@@ -7,30 +7,14 @@ import FormButtons from "./FormButtons";
 import { useTask } from "../services/useTask";
 import { formatRelative } from "date-fns/esm";
 
-const TaskDetail = () => {
-  const globals = useGlobals();
-  const task = globals.detailTask;
+const TaskDetail = ({ task, setTaskDetailData }) => {
   const store = useTask();
-  // return prematurely if task is not defined
-
   //form states
   const [title, setTitle] = useState(task ? task.title : "");
   const [description, setDescription] = useState(task ? task.description : "");
   const [priority, setPriority] = useState(task ? task.priority : 1);
   const [dueDate, setDueDate] = useState(task ? task.dueDate : null);
   const [customDueDate, setCustomDueDate] = useState(false);
-
-  useEffect(() => {
-    if (globals.detailTask) {
-      const task = globals.detailTask;
-
-      setTitle(task.title);
-      setDescription(task.description);
-      setPriority(task.priority);
-      setDueDate(task.dueDate);
-    }
-    return () => {};
-  }, [globals.detailTask]);
 
   function handleTaskPriority(priority) {
     setPriority(priority);
@@ -47,15 +31,15 @@ const TaskDetail = () => {
       };
       await store.updateTask(task.id, newTask);
     }
-    globals.deactivateTaskDetailModal();
+    setTaskDetailData(null);
   }
 
   function handleCancel() {
-    globals.deactivateTaskDetailModal();
+    setTaskDetailData(null);
   }
 
-  return (
-    <div className={globals.taskDetailActivated ? "modal is-active" : "modal"}>
+  return task ? (
+    <div className={"modal is-active"}>
       <div className="modal-background" onClick={() => handleCancel()}></div>
       {task && (
         <div className="modal-content has-background-white-bis has-text-black-bis">
@@ -138,7 +122,7 @@ const TaskDetail = () => {
         </div>
       )}
     </div>
-  );
+  ) : null;
 };
 
 export default TaskDetail;

@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTask } from "../services/useTask";
 import { useGlobals } from "../services/useGlobals";
 import { defaultDueDate } from "../Constants/constants";
 import addDays from "date-fns/addDays";
 import { formatRelative } from "date-fns";
+import TaskDetail from "./TaskDetail";
 
 function TaskRow({ task }) {
   const { deleteTask, changeTaskStatus } = useTask();
   const globals = useGlobals();
+  const [taskDetailData, setTaskDetailData] = useState(null);
 
   function selectClassName() {
     let className = "tag is-light ";
@@ -25,8 +27,14 @@ function TaskRow({ task }) {
     return className;
   }
 
-  function handleTaskClick() {
-    globals.activateTaskDetailModal(task);
+  function handleTaskDelete(task) {
+    if (window.confirm("do you really want to delete this task?")) {
+      deleteTask(task);
+    }
+  }
+
+  function handleTaskClick(t) {
+    setTaskDetailData(t);
   }
 
   const style = {
@@ -36,6 +44,7 @@ function TaskRow({ task }) {
 
   return (
     <tr>
+      <TaskDetail task={taskDetailData} setTaskDetailData={setTaskDetailData} />
       <td className="columns p-0 m-0 is-mobile">
         <button
           className="column is-narrow is-flex is-justify-content-center remove-button-preset"
@@ -54,7 +63,7 @@ function TaskRow({ task }) {
         </button>
         <div
           className="column is-flex is-clickable"
-          onClick={() => handleTaskClick()}
+          onClick={() => handleTaskClick(task)}
           style={style}
         >
           <span className="is-align-self-center">
@@ -77,7 +86,7 @@ function TaskRow({ task }) {
 
         <div
           className="column is-narrow is-flex is-clickable  "
-          onClick={async () => await deleteTask(task)}
+          onClick={async () => await handleTaskDelete(task)}
           style={style}
         >
           {globals.showArchived ? (

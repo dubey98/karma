@@ -33,6 +33,7 @@ const TaskForm = () => {
           ? defaultProject.id
           : currentProject.id,
         uId: user.uid,
+        archived: false,
       };
       await addTask(newTask);
       setActivated(false);

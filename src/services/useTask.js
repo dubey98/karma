@@ -2,7 +2,12 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { useAuth } from "./useAuth";
 import { useGlobals } from "./useGlobals";
 import useProject from "./useProject";
-import { taskListener, addTaskFS } from "./firebase/firestore";
+import {
+  taskListener,
+  addTaskFS,
+  deleteTaskFS,
+  updateTaskFS,
+} from "./firebase/firestore";
 
 const taskContext = createContext(null);
 
@@ -30,7 +35,6 @@ function useTaskProvider() {
   }, [currentProject, user]);
 
   const addTask = async (task) => {
-    console.log("adding Task", task);
     try {
       await addTaskFS(task, currentProject.id);
     } catch (error) {
@@ -42,12 +46,20 @@ function useTaskProvider() {
     console.log("update task fn");
   };
 
-  const deleteTask = async () => {
-    console.log("delete task fn");
+  const deleteTask = async (task) => {
+    try {
+      await deleteTaskFS(task.id, task.projectId);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  const changeTaskStatus = async () => {
-    console.log("change Task Status fn ");
+  const changeTaskStatus = async (task, newStatus) => {
+    try {
+      await updateTaskFS(task, { completed: newStatus });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return {

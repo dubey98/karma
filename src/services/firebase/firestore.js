@@ -8,6 +8,8 @@ import {
   doc,
   collectionGroup,
   addDoc,
+  deleteDoc,
+  setDoc,
 } from "firebase/firestore";
 import { ProjectConverter } from "../../models/Project";
 import { TaskConverter } from "../../models/Task";
@@ -81,10 +83,22 @@ const addTaskFS = async (task, projectId) => {
   return taskRef.id;
 };
 
+const deleteTaskFS = async (taskId, projectId) => {
+  const taskRef = doc(db, "projects", projectId, "tasks", taskId);
+  await deleteDoc(taskRef);
+};
+
+const updateTaskFS = async (task, newData) => {
+  const taskRef = doc(db, "projects", task.projectId, "tasks", task.id);
+  await setDoc(taskRef, newData, { merge: true });
+};
+
 export {
   projectListener,
   getDefaultProjectId,
   getProject,
   taskListener,
   addTaskFS,
+  deleteTaskFS,
+  updateTaskFS,
 };

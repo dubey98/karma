@@ -19,10 +19,8 @@ function useGlobalProvider() {
     query: "(max-width: 1023px)",
   });
   const [currentProject, setCurrentProject] = useState(null);
-  const [taskDetailActivated, setTaskDetailActivated] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
   const [showCompleted, setShowCompleted] = useState(false);
-  const [detailTask, setDetailTask] = useState(null);
   const [sideBarStatus, setSideBarStatus] = useState(true);
 
   useEffect(() => {
@@ -32,16 +30,6 @@ function useGlobalProvider() {
       setSideBarStatus(false);
     }
   }, [isMobile]);
-
-  function activateTaskDetailModal(task) {
-    setTaskDetailActivated(true);
-    setDetailTask(task);
-  }
-
-  function deactivateTaskDetailModal() {
-    setDetailTask(null);
-    setTaskDetailActivated(false);
-  }
 
   function handleSideBarStatus(status) {
     setSideBarStatus(status);
@@ -53,13 +41,9 @@ function useGlobalProvider() {
 
   return {
     isMobile,
-    taskDetailActivated,
-    detailTask,
     showArchived,
     showCompleted,
     sideBarStatus,
-    activateTaskDetailModal,
-    deactivateTaskDetailModal,
     setShowCompleted,
     setShowArchived,
     handleSideBarStatus,
