@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { useGlobals } from "../services/useGlobals";
+import React, { useState } from "react";
 import DropDown from "./DropDown";
 import DateAndTimeSelector from "./DateAndTimeSelector";
 import * as constants from "../Constants/constants";

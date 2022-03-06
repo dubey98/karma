@@ -4,7 +4,7 @@ import useProject from "../services/useProject";
 
 const ProjectForm = ({ setActivated }) => {
   const { user } = useAuth();
-  const { addProject, deleteProject, updateProject } = useProject();
+  const { addProject } = useProject();
   const [title, setTitle] = useState("");
   const [titleError, setTitleError] = useState("");
 

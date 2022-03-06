@@ -138,7 +138,7 @@ async function createDefaultProject(userId) {
 }
 
 const addProjectFS = async (project) => {
-  const docRef = await addDoc(collection(db, "projects"), project);
+  await addDoc(collection(db, "projects"), project);
 };
 
 export {

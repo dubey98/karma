@@ -35,11 +35,11 @@ const Navbar = () => {
             <span aria-hidden="true"></span>
           </button>
 
-          <Link className="navbar-item" to="/">
+          <a href="/" className="navbar-item">
             <span className="is-size-4 has-text-weight-semibold ">
               <strong>KARMA</strong>
             </span>
-          </Link>
+          </a>
 
           {globals.isMobile && <NavbarUserDropDown />}
         </div>

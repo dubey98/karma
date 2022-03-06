@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ProjectForm from "./ProjectForm";
 import DefaultProjectList from "./DefaultProjectList";
 import useProject from "../services/useProject";
 import { useGlobals } from "../services/useGlobals";
 
 function ProjectList() {
-  const { projects, defaultProject } = useProject();
+  const { projects } = useProject();
   const { currentProject, changeCurrentProject } = useGlobals();
   const [activated, setActivated] = useState(false);
 

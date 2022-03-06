@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { defaultProjects } from "../Constants/constants";
 import { useGlobals } from "../services/useGlobals";
 

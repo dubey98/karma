@@ -1,6 +1,5 @@
 import React, { useRef } from "react";
 import { useAuth } from "../services/useAuth";
-import { Link } from "react-router-dom";
 
 const NavbarUserDropDown = () => {
   const auth = useAuth();
@@ -35,7 +34,7 @@ const NavbarUserDropDown = () => {
             onMouseEnter={() => handleMouseEnter()}
             onMouseLeave={() => handleMouseLeave()}
           >
-            <Link to="/" className="navbar-link is-arrowless">
+            <a href="/" className="navbar-link is-arrowless">
               {auth.user.photoURL ? (
                 <figure className="image is-32x32">
                   <img
@@ -49,20 +48,20 @@ const NavbarUserDropDown = () => {
                   <i className="far fa-user"></i>
                 </span>
               )}
-            </Link>
+            </a>
 
             <div
               className="navbar-dropdown navbar-dropdown-persist is-right-extended"
               ref={profileDropdown}
             >
-              <Link to="/" className="navbar-item">
+              <a to="/" className="navbar-item">
                 Profile
-              </Link>
-              <Link to="/" className="navbar-item">
+              </a>
+              <a to="/" className="navbar-item">
                 Settings
-              </Link>
+              </a>
               <hr className="navbar-divider" />
-              <Link
+              <a
                 to="/"
                 className="navbar-item is-selectable"
                 onClick={async () => {
@@ -71,7 +70,7 @@ const NavbarUserDropDown = () => {
                 }}
               >
                 Log Out
-              </Link>
+              </a>
             </div>
           </div>
         </div>

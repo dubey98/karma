@@ -65,23 +65,23 @@ const Settings = () => {
   );
 };
 
-const CalendarButton = withRouter(({ history }) => {
-  const location = useLocation();
+// const CalendarButton = withRouter(({ history }) => {
+//   const location = useLocation();
 
-  return (
-    <div className="level-item">
-      <button
-        className="button"
-        onClick={() =>
-          location.pathname === "/karma/calendar-view"
-            ? history.push("/karma")
-            : history.push("/karma/calendar-view")
-        }
-      >
-        Calendar
-      </button>
-    </div>
-  );
-});
+//   return (
+//     <div className="level-item">
+//       <button
+//         className="button"
+//         onClick={() =>
+//           location.pathname === "/karma/calendar-view"
+//             ? history.push("/karma")
+//             : history.push("/karma/calendar-view")
+//         }
+//       >
+//         Calendar
+//       </button>
+//     </div>
+//   );
+// });
 
 export default Settings;

@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import {
   projectListener,
   getDefaultProjectId,
-  getProject,addProjectFS
+  getProject,
+  addProjectFS,
 } from "./firebase/firestore";
 import { useAuth } from "./useAuth";
 import { useGlobals } from "./useGlobals";
@@ -15,8 +16,8 @@ function useProject() {
 
   useEffect(() => {
     let unsub = () => {};
-    if (user) {
-      unsub = projectListener(user ? user.uid : "", setProjects);
+    if (user && user.uid) {
+      unsub = projectListener(user.uid, setProjects);
     }
     return unsub;
   }, [user]);
@@ -32,9 +33,9 @@ function useProject() {
   }, [user]);
 
   const addProject = async (project) => {
-    try{
+    try {
       await addProjectFS(project);
-    } catch(err){
+    } catch (err) {
       console.log(err);
     }
   };

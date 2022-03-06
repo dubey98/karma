@@ -1,5 +1,3 @@
-"use strict";
-
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "./../../config/firebase.config";
 import { addUser, createDefaultProject, checkIfUserExists } from "./firestore";
