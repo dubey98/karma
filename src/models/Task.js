@@ -7,9 +7,10 @@ const TaskConverter = {
       description: t.description,
       dueDate: Timestamp.fromDate(t.dueDate),
       priority: t.priority,
-      completeed: t.completed,
+      completed: t.completed,
       projectId: t.projectId,
       uId: t.uId,
+      archived: t.archived,
     };
   },
   fromFirestore: (snapShot, options) => {
@@ -22,6 +23,7 @@ const TaskConverter = {
       priority: data.priority,
       completed: data.completed,
       projectId: data.projectId,
+      archived: data.archived,
     };
   },
 };

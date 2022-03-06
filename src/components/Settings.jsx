@@ -8,9 +8,9 @@ const Settings = () => {
   const {
     currentProject,
     showCompleted,
-    setShowCompleted,
     showArchived,
-    setShowArchived,
+    changeShowArchived,
+    changeShowCompleted,
   } = useGlobals();
 
   function handleCogClick() {
@@ -44,7 +44,7 @@ const Settings = () => {
             <div className="column is-narrow">
               <Toggler
                 togglerOn={showCompleted}
-                setTogglerOn={setShowCompleted}
+                setTogglerOn={changeShowCompleted}
               />
             </div>
           </div>
@@ -55,7 +55,7 @@ const Settings = () => {
             <div className="column is-narrow">
               <Toggler
                 togglerOn={showArchived}
-                setTogglerOn={setShowArchived}
+                setTogglerOn={changeShowArchived}
               />
             </div>
           </div>

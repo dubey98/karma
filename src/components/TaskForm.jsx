@@ -23,13 +23,15 @@ const TaskForm = () => {
 
   async function _addTask() {
     if (validateInput()) {
+      console.log(defaultProjectIds.includes(currentProject.id.toString().trim()));
+      console.log(defaultProject)
       const newTask = {
         title: title.trim(),
         description: description.trim(),
         completed: false,
         dueDate: dueDate,
         priority: priority,
-        projectId: defaultProjectIds.includes(currentProject.id)
+        projectId: defaultProjectIds.includes(currentProject.id.toString().trim())
           ? defaultProject.id
           : currentProject.id,
         uId: user.uid,

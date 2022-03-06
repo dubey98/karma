@@ -39,13 +39,20 @@ function useGlobalProvider() {
     setCurrentProject(p);
   }
 
+  function changeShowCompleted(value) {
+    setShowCompleted(value);
+  }
+  function changeShowArchived(value) {
+    setShowArchived(value);
+  }
+
   return {
     isMobile,
     showArchived,
     showCompleted,
     sideBarStatus,
-    setShowCompleted,
-    setShowArchived,
+    changeShowArchived,
+    changeShowCompleted,
     handleSideBarStatus,
     currentProject,
     changeCurrentProject,

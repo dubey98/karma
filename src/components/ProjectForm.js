@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useAuth } from "../services/useAuth";
 import useProject from "../services/useProject";
 
 const ProjectForm = ({ setActivated }) => {
-  const {addProject, deleteProject, updateProject} = useProject();
+  const { user } = useAuth();
+  const { addProject, deleteProject, updateProject } = useProject();
   const [title, setTitle] = useState("");
   const [titleError, setTitleError] = useState("");
 
@@ -14,7 +16,13 @@ const ProjectForm = ({ setActivated }) => {
 
   async function handleAddProject() {
     if (validateInput()) {
-      await addProject(title);
+      const project = {
+        title: title,
+        uid: user.uid,
+        description: "",
+        archived: false,
+      };
+      await addProject(project);
       setActivated(false);
     }
   }

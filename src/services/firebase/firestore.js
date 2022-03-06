@@ -137,6 +137,10 @@ async function createDefaultProject(userId) {
   }
 }
 
+const addProjectFS = async (project) => {
+  const docRef = await addDoc(collection(db, "projects"), project);
+};
+
 export {
   projectListener,
   getDefaultProjectId,
@@ -148,6 +152,7 @@ export {
   updateTaskFS,
   addUser,
   checkIfUserExists,
+  addProjectFS,
 };
 
 function _getTaskQuery(projectId, userId, options) {
@@ -157,8 +162,8 @@ function _getTaskQuery(projectId, userId, options) {
     collectionGroup(db, "tasks"),
     where("projectId", "==", projectId),
     where("uId", "==", userId),
-    where("completed", "==", false),
-    where("archived", "==", false)
+    where("completed", "==", options.showCompleted || false),
+    where("archived", "==", options.showArchived || false)
   );
   if (options.getTodays) {
     q = query(
@@ -166,16 +171,16 @@ function _getTaskQuery(projectId, userId, options) {
       where("uId", "==", userId),
       where("dueDate", ">", startOfToday),
       where("dueDate", "<", endOfToday),
-      where("completed", "==", false),
-      where("archived", "==", false)
+      where("completed", "==", options.showCompleted || false),
+      where("archived", "==", options.showArchived || false)
     );
   } else if (options.getUpcoming) {
     q = query(
       collectionGroup(db, "tasks"),
       where("uId", "==", userId),
       where("dueDate", ">", endOfToday),
-      where("completed", "==", false),
-      where("archived", "==", false)
+      where("completed", "==", options.showCompleted || false),
+      where("archived", "==", options.showArchived || false)
     );
   }
   return q.withConverter(TaskConverter);

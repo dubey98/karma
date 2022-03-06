@@ -23,7 +23,7 @@ export function TaskContextProvider({ children }) {
 
 function useTaskProvider() {
   const { user } = useAuth();
-  const { currentProject, changeCurrentProject } = useGlobals();
+  const { currentProject, showArchived, showCompleted } = useGlobals();
   const { defaultProject } = useProject();
   const [tasks, setTasks] = useState(null);
 
@@ -33,15 +33,17 @@ function useTaskProvider() {
       let options = {
         getTodays: currentProject.id == 0,
         getUpcoming: currentProject.id == 1,
+        showArchived: showArchived,
+        showCompleted: showCompleted,
       };
       unsub = taskListener(currentProject.id, user.uid, setTasks, options);
     }
     return unsub;
-  }, [currentProject, user]);
+  }, [currentProject, user, showArchived, showCompleted]);
 
   const addTask = async (task) => {
     try {
-      await addTaskFS(task, currentProject.id);
+      await addTaskFS(task, task.projectId);
     } catch (error) {
       console.log(error);
     }
@@ -67,11 +69,21 @@ function useTaskProvider() {
     }
   };
 
+  const archiveTask = async (task, newArchiveStatus) => {
+    try {
+      // console.log(task, newArchiveStatus)
+      await updateTaskFS(task, { archived: newArchiveStatus });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return {
     tasks,
     addTask,
     updateTask,
     deleteTask,
     changeTaskStatus,
+    archiveTask,
   };
 }

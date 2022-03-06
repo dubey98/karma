@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import {
   projectListener,
   getDefaultProjectId,
-  getProject,
+  getProject,addProjectFS
 } from "./firebase/firestore";
 import { useAuth } from "./useAuth";
 import { useGlobals } from "./useGlobals";
@@ -31,8 +31,12 @@ function useProject() {
     user && _getData();
   }, [user]);
 
-  const addProject = async () => {
-    console.log("add project fn");
+  const addProject = async (project) => {
+    try{
+      await addProjectFS(project);
+    } catch(err){
+      console.log(err);
+    }
   };
 
   const deleteProject = async () => {

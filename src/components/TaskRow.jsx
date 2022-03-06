@@ -7,7 +7,7 @@ import addDays from "date-fns/addDays";
 import TaskDetail from "./TaskDetail";
 
 function TaskRow({ task }) {
-  const { deleteTask, changeTaskStatus } = useTask();
+  const { deleteTask, changeTaskStatus, archiveTask } = useTask();
   const globals = useGlobals();
   const [taskDetailData, setTaskDetailData] = useState(null);
 
@@ -27,8 +27,13 @@ function TaskRow({ task }) {
     return className;
   }
 
-  async function handleTaskDelete(task) {
-    if (window.confirm("do you really want to delete this task?")) {
+  async function handleTaskAction(task, action, newStatus) {
+    if (action === "archive") {
+      await archiveTask(task, newStatus);
+    } else if (
+      action === "delete" &&
+      window.confirm("do you really want to delete this task?")
+    ) {
       await deleteTask(task);
     }
   }
@@ -84,18 +89,32 @@ function TaskRow({ task }) {
           <div className="is-align-self-center"></div>
         </div>
 
-        <div
-          className="column is-narrow is-flex is-clickable  "
-          onClick={async () => await handleTaskDelete(task)}
-          style={style}
-        >
+        <div className="column is-narrow is-flex is-clickable  " style={style}>
           {globals.showArchived ? (
-            <span className="icon is-align-self-center">
-              <i className="fas fa-archive"></i>
-            </span>
+            <div>
+              <button
+                className=" is-align-self-center"
+                onClick={async () =>
+                  await handleTaskAction(task, "archive", !task.archived)
+                }
+              >
+                UnArchive
+              </button>
+              <span
+                className="icon is-align-self-center"
+                onClick={async () => await handleTaskAction(task, "delete")}
+              >
+                <i className="far fa-trash-alt"></i>
+              </span>
+            </div>
           ) : (
-            <span className="icon is-align-self-center">
-              <i className="far fa-trash-alt"></i>
+            <span
+              className="icon is-align-self-center"
+              onClick={async () =>
+                await handleTaskAction(task, "archive", !task.archived)
+              }
+            >
+              <i className="fas fa-archive"></i>
             </span>
           )}
         </div>
