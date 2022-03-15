@@ -12,7 +12,7 @@ function HomePageFront() {
         <div className="container has-text-centered">
           <p className="content">
             <span className="subtitle">
-              A Minimalistic TODO App with powerfull features
+              A Minimalistic TODO App with powerful features
               <br />
               Please <strong>SignUp</strong> or <strong>Log In</strong> to
               Continue

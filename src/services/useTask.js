@@ -33,7 +33,11 @@ function useTaskProvider() {
         showArchived: showArchived,
         showCompleted: showCompleted,
       };
-      unsub = taskListener(currentProject.id, user.uid, setTasks, options);
+      try {
+        unsub = taskListener(currentProject.id, user.uid, setTasks, options);
+      } catch (err) {
+        console.error("Error in tasks listener",err);
+      }
     }
     return unsub;
   }, [currentProject, user, showArchived, showCompleted]);

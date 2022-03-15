@@ -17,7 +17,11 @@ function useProject() {
   useEffect(() => {
     let unsub = () => {};
     if (user && user.uid) {
-      unsub = projectListener(user.uid, setProjects);
+      try {
+        unsub = projectListener(user.uid, setProjects);
+      } catch (err) {
+        console.error("Error in project Listener", err);
+      }
     }
     return unsub;
   }, [user]);
